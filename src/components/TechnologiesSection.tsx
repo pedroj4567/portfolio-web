@@ -7,9 +7,7 @@ const TechnologiesSection = () => {
   return (
     <section className="min-w-full mt-10 pt-10  py-10 flex flex-col items-center">
       <div className=" w-1/2 text-center  mb-10">
-        <h2 className="text-3xl font-bold text-slate-500">
-          Lenguajes y Tecnologías
-        </h2>
+        <h2 className="text-3xl font-bold text-slate-500">Tecnologías</h2>
       </div>
 
       {/* Separar en componentes */}
