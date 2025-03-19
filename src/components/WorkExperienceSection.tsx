@@ -52,7 +52,7 @@ const WorkExperienceSection = () => {
 
                 <span className="text-teal-700">Santiago de Chile, Chile.</span>
               </div>
-              <p className="text-sm w-sm">
+              <p className="text-sm ">
                 Desarrollo aplicaciones escalables utilizando Lambdas con
                 Node.js y Python, integrando GraphQL como capa de conectividad
                 de datos eficiente y flexible para consultas precisas y
