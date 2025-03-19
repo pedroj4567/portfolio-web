@@ -4,7 +4,7 @@ import TimeLineItem from "./TimeLineItem";
 const WorkExperienceSection = () => {
   return (
     <article className="w-full">
-      <div className="my-10">
+      <div className="my-8">
         <h2 className="text-3xl text-slate-600 text-center">
           Experiencia <span className="text-teal-600 font-bold">laboral</span>
         </h2>

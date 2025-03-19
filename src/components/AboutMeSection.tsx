@@ -1,6 +1,6 @@
 const AboutMeSection = () => {
   return (
-    <section className="">
+    <section className="py5 md:py-8">
       <div className="">
         <div className=" flex flex-col items-center gap-5">
           <div className="">

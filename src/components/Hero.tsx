@@ -1,9 +1,11 @@
 import Avatar from "./Avatar";
+import ContactInformation from "./ContactInformation";
 import PillTab from "./PillTab";
+import { Letter, Phone, UbicationPoint } from "./icons";
 
 const Hero = () => {
   return (
-    <section className=" h-1/2 py-5 min-w-full">
+    <section className="h-1/2 py-5">
       <div className=" mx-auto  transition-all max-w-sm w-70 sm:w-80">
         <Avatar />
       </div>
@@ -20,17 +22,26 @@ const Hero = () => {
         </div>
       </div>
 
-      {/* <div className="flex flex-col justify-evenly mt-6 ">
-        <p>
-          <span>Correo:</span> pedroj4567@gmail.com
-        </p>
-        <p>
-          <span>Telefono:</span> pedroj4567@gmail.com
-        </p>
-        <p>
-          <span>Ubicacion:</span> pedroj4567@gmail.com
-        </p>
-      </div> */}
+      <div className="flex flex-col sm:flex-row items-center justify-evenly mt-8">
+        <ContactInformation
+          information={"pedroj4567@gmail.com"}
+          label={"Correo"}
+        >
+          <Letter />
+        </ContactInformation>
+        <ContactInformation
+          information={"(+57) 350-331-4211"}
+          label={"Telefono"}
+        >
+          <Phone />
+        </ContactInformation>{" "}
+        <ContactInformation
+          information={"Cúcuta, Colombia"}
+          label={"Ubicacion"}
+        >
+          <UbicationPoint />
+        </ContactInformation>
+      </div>
     </section>
   );
 };

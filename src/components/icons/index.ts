@@ -23,6 +23,10 @@ import Css from "./Css";
 import Mongo from "./Mongo";
 import Actions from "./Actions";
 import Aws from "./Aws";
+import Letter from "./Letter";
+import UbicationPoint from "./UbicationPoint";
+import Phone from "./Phone";
+import LightBull from "./LightBull";
 export {
   Aws,
   Actions,
@@ -49,4 +53,8 @@ export {
   Github,
   Css,
   Mongo,
+  Letter,
+  UbicationPoint,
+  Phone,
+  LightBull,
 };

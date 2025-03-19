@@ -199,7 +199,7 @@ export const workExperiences = [
   },
   {
     id: 5,
-    date: "2022-203",
+    date: "2022-2023",
     title: "Desarrollador de Software Junior",
     place: "La Victoria. Aragua,Venezuela.",
     caption:
@@ -209,7 +209,7 @@ export const workExperiences = [
   },
   {
     id: 6,
-    date: "2020-203",
+    date: "2020-2023",
     title: "Desarrollador de software Freelancer",
     place: "Cualquier parte del mundo.",
     caption:
