@@ -1,8 +1,8 @@
 import AboutMeSection from "./components/AboutMeSection";
 import Divider from "./components/Divider";
 import Hero from "./components/Hero";
+import ProfesionalDataSection from "./components/ProfesionalDataSection";
 import TechnologiesSection from "./components/TechnologiesSection";
-import WorkExperienceSection from "./components/WorkExperienceSection";
 
 function App() {
   return (
@@ -11,7 +11,7 @@ function App() {
       <Divider />
       <AboutMeSection />
       <TechnologiesSection />
-      <WorkExperienceSection />
+      <ProfesionalDataSection />
     </main>
   );
 }
