@@ -15,14 +15,14 @@ const Hero = () => {
           <span className="text-slate-500">Ingeniero en informática</span>
         </div>
 
-        <div className="mt-4 mb-5">
+        <div className="mt-4 sm:mb-5">
           <p className="w-full flex items-center sm:justify-center  text-sm flex-col md:flex-row gap-8">
             <PillTab text={"Backend Developer"} primary={true} />
           </p>
         </div>
       </div>
 
-      <div className="flex flex-col  px-12  sm:justify-around sm:flex-row sm:items-center mt-8 ">
+      <div className="flex flex-col  px-12  sm:justify-around lg:flex-row sm:items-center">
         <ContactInformation
           information={"pedroj4567@gmail.com"}
           label={"Correo"}
@@ -30,7 +30,7 @@ const Hero = () => {
           <Letter />
         </ContactInformation>
         <ContactInformation
-          information={"linkedin.com/in/pedroacostadev"}
+          information={"linkedin.com/pedroacostadev"}
           label={"Linkedin"}
         >
           <svg
