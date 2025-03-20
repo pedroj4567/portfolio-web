@@ -15,7 +15,7 @@ const TechnologiesSection = () => {
       {/* Separar en componentes */}
       <div className="w-sm sm:w-5xl  ">
         <div
-          className="collapse collapse-arrow bg-base-100 border-base-300 border mb-5 "
+          className="collapse collapse-arrow bg-base-100  border mb-5 "
           tabIndex={0}
         >
           <input type="checkbox" />
@@ -47,7 +47,7 @@ const TechnologiesSection = () => {
         </div>
 
         <div
-          className="collapse collapse-arrow bg-base-100 border-base-300 border  mb-5"
+          className="collapse collapse-arrow bg-base-100 border  mb-5"
           tabIndex={1}
         >
           <input type="checkbox" />
@@ -79,7 +79,7 @@ const TechnologiesSection = () => {
         </div>
 
         <div
-          className="collapse collapse-arrow bg-base-100 border-base-300 border  mb-5"
+          className="collapse collapse-arrow bg-base-100  border  mb-5"
           tabIndex={2}
         >
           <input type="checkbox" />
@@ -111,7 +111,7 @@ const TechnologiesSection = () => {
         </div>
 
         <div
-          className="collapse collapse-arrow bg-base-100 border-base-300 border  mb-5"
+          className="collapse collapse-arrow bg-base-100 border  mb-5"
           tabIndex={3}
         >
           <input type="checkbox" />
@@ -143,11 +143,11 @@ const TechnologiesSection = () => {
         </div>
 
         <div
-          className="collapse collapse-arrow bg-base-100 border-base-300 border  mb-5"
+          className="collapse collapse-arrow bg-base-100  border  mb-5"
           tabIndex={4}
         >
           <input type="checkbox" />
-          <div className="collapse-title font-semibold text-slate-600 flex justify-between">
+          <div className="collapse-title font-semibold text-slate-600  flex justify-between">
             Tecnologías de despliegue y cloud
           </div>
 
@@ -174,12 +174,6 @@ const TechnologiesSection = () => {
           </div>
         </div>
       </div>
-
-      {/* <div className=" w-full sm:grid-cols-3 grid grid-cols-1 px-10 gap-5 place-items-center mt-8">
-        <Card />
-        <Card />
-        <Card />
-      </div> */}
     </section>
   );
 };
