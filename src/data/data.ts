@@ -218,3 +218,62 @@ export const workExperiences = [
     end: false,
   },
 ];
+
+export const personalWork = [
+  {
+    id: 1,
+    title: "Elpis",
+    tag: "Fullstack",
+    caption:
+      "Aplicación diseñada para la gestión de recursos internos de la Alcaldía del Municipio Valle de La Pascua, optimizando procesos administrativos, control de inventarios y asignación de activos de manera eficiente.",
+    link: "https://elpis-grado-unerg.netlify.app/",
+    image: "./elpis.webp",
+  },
+  {
+    id: 2,
+    title: "GuitarLA",
+    tag: "Frontend",
+    caption:
+      "Carrito de compras personal desarrollado con TypeScript, React y Tailwind CSS, como proyecto práctico para gestionar productos, agregarlos al carrito y simular una experiencia de compra.",
+    link: "https://guitarlapersonalproject.netlify.app/",
+    image: "./guitarLA.webp",
+  },
+  {
+    id: 3,
+    title: "Auth Rest Api",
+    tag: "Backend",
+    caption:
+      "Rest API desarrollada con Node.js y TypeScript bajo Clean Architecture, diseñada para ser escalable, mantenible y con un código limpio y modular.",
+    link: "https://github.com/pedroj4567/auth_restapi_cleanCode",
+    image: "./restClean.webp",
+  },
+
+  {
+    id: 4,
+    title: "TokTik App",
+    tag: "Mobile",
+    caption:
+      "TokTik es una app móvil hecha con Flutter que clona las funcionalidades principales de TikTok, como videos cortos y scroll infinito.",
+    link: "https://github.com/pedroj4567/TokTik_app",
+    image: "./flutter.webp",
+  },
+
+  {
+    id: 5,
+    title: "Optical Shield",
+    tag: "Fullstack",
+    caption:
+      "Optical Shield es una app web con React, Node.js y Python que reconoce placas vehiculares, las procesa y las valida en una base de datos para control de acceso y seguridad.",
+    link: "https://opticalshield.netlify.app/",
+    image: "./opticalShield.webp",
+  },
+  {
+    id: 5,
+    title: "Condominiun Suite/App - En construccion",
+    tag: "Fullstack",
+    caption:
+      "Condominio es una plataforma web y móvil para gestionar pagos, reservas, comunicados y mantenimiento en condominios de manera centralizada. ",
+    link: "",
+    image: "./Condominiun.webp",
+  },
+];
