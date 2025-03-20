@@ -27,7 +27,9 @@ import Letter from "./Letter";
 import UbicationPoint from "./UbicationPoint";
 import Phone from "./Phone";
 import LightBull from "./LightBull";
+import Code from "./Code";
 export {
+  Code,
   Aws,
   Actions,
   Typescript,

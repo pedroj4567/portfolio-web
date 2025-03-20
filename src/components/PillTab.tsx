@@ -3,12 +3,10 @@ export type PillTabProps = {
   primary?: boolean;
 };
 
-const PillTab = ({ text, primary }: PillTabProps) => {
+const PillTab = ({ text }: PillTabProps) => {
   return (
     <span
-      className={` ${
-        primary ? "bg-teal-500 text-white" : ""
-      }  p-3 rounded-lg border-slate-100  text-teal-600 text-[17px] font-bold shadow-md hover:bg-teal-600 hover:text-white transition-all cursor-pointer`}
+      className={` bg-gradient-to-tl from-teal-600 via-teal-700 to-teal-500 bg-clip-text text-transparent text-[25px] font-bold pb-3   transition-all `}
     >
       {text}
     </span>
