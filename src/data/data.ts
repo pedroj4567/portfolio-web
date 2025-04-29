@@ -269,11 +269,11 @@ export const personalWork = [
   },
   {
     id: 5,
-    title: "Condominiun Suite/App - En construccion",
+    title: "FrostAcademy",
     tag: "Fullstack",
     caption:
-      "Condominio es una plataforma web y móvil para gestionar pagos, reservas, comunicados y mantenimiento en condominios de manera centralizada. ",
-    link: "",
-    image: "./Condominiun.webp",
+      "FrostAcademy es una aplicacion web dedicada a ofrecer cursos online. ",
+    link: "https://frostacademy.netlify.app/",
+    image: "./frostAcademy.webp",
   },
 ];
