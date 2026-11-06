@@ -1,24 +1,50 @@
-# build output
+# ── Build output ──
 dist/
-# generated types
+.output/
+
+# ── Generated types / caches (Astro writes dev logs here too) ──
 .astro/
+.cache/
+.eslintcache
+*.tsbuildinfo
 
-# dependencies
+# ── Dependencies ──
 node_modules/
+.pnpm-store/
 
-# logs
+# ── Logs ──
+*.log
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
 
-
-# environment variables
+# ── Environment variables and secrets (keep only the example) ──
 .env
-.env.production
+.env.*
+!.env.example
+*.pem
+*.key
+*.p12
+*.crt
+secrets/
 
-# macOS-specific files
+# ── Deploy tooling (local state, may hold tokens/site ids) ──
+.netlify/
+.vercel/
+
+# ── Tests / coverage ──
+coverage/
+playwright-report/
+test-results/
+
+# ── OS ──
 .DS_Store
+Thumbs.db
 
-# jetbrains setting folder
+# ── Editors (shared VS Code settings stay versioned) ──
 .idea/
+*.swp
+.vscode/*
+!.vscode/extensions.json
+!.vscode/launch.json
