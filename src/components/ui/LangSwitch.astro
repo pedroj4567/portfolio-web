@@ -1,0 +1,31 @@
+---
+import { languages, translatePath, useTranslations, type Lang } from "@/i18n/utils";
+
+interface Props {
+  lang: Lang;
+  class?: string;
+}
+
+const { lang, class: className } = Astro.props;
+const t = useTranslations(lang);
+const path = Astro.url.pathname;
+---
+
+<!--
+  These are links, not buttons: each language has its own URL (/es/, /en/), which
+  Google indexes. The choice is saved in localStorage from BaseLayout.
+-->
+<div class:list={["lang", className]} role="group" aria-label={t.nav.langLabel}>
+  {languages.map((l) => (
+    <a
+      class="lb"
+      href={translatePath(path, l)}
+      hreflang={l}
+      lang={l}
+      data-lang-link={l}
+      aria-current={l === lang ? "true" : undefined}
+    >
+      {l.toUpperCase()}
+    </a>
+  ))}
+</div>

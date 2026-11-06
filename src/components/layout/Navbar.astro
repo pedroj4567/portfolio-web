@@ -1,0 +1,113 @@
+---
+import LangSwitch from "@/components/ui/LangSwitch.astro";
+import { routes, useTranslations, type Lang } from "@/i18n/utils";
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+const r = routes(lang);
+
+const links = [
+  { label: t.nav.about, href: r.section("about") },
+  { label: t.nav.stack, href: r.section("stack") },
+  { label: t.nav.career, href: r.section("career") },
+  { label: t.nav.projects, href: r.section("projects") },
+  { label: t.nav.contact, href: r.section("contact") },
+];
+---
+
+<header
+  class="fixed inset-x-0 top-0 z-40 border-b-[1.5px] border-ink bg-paper/90 backdrop-blur-md"
+  style="view-transition-name: site-nav"
+>
+  <div class="container-site flex h-[66px] items-center gap-6">
+    <a href={r.home} class="font-display text-[22px] font-semibold tracking-[-0.04em]">
+      PacostaDev<span class="dot">.</span>
+    </a>
+
+    <nav aria-label="Principal" class="max-nav:hidden ml-4">
+      <ul class="flex gap-6 font-mono text-[13px]">
+        {links.map((l) => (
+          <li>
+            <a href={l.href} class="py-2 hover:text-cobalt">
+              {l.label}
+            </a>
+          </li>
+        ))}
+      </ul>
+    </nav>
+
+    <div class="ml-auto flex items-center gap-3">
+      <p class="mono-meta max-md:hidden flex items-center gap-2 text-ink">
+        <span class="status-dot pulse" aria-hidden="true"></span>
+        {t.nav.available}
+      </p>
+      <LangSwitch lang={lang} />
+      <button
+        type="button"
+        class="burger nav:hidden"
+        aria-expanded="false"
+        aria-controls="mobile-menu"
+        aria-label={t.nav.openMenu}
+        data-menu-open
+      >
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Scroll progress (§7) -->
+  <div class="progress absolute inset-x-0 -bottom-[1.5px] h-[3px]" aria-hidden="true"></div>
+</header>
+
+<style>
+  .progress {
+    background: linear-gradient(90deg, #2b59ff 0%, #7f9bff 60%, #d9c4a3 100%);
+  }
+
+  .burger {
+    display: inline-flex;
+    flex-direction: column;
+    align-items: flex-end;
+    justify-content: center;
+    gap: 5px;
+    width: 48px;
+    height: 44px;
+    padding: 0 13px;
+    border: 1.5px solid var(--color-ink);
+    border-radius: 999px;
+    background: var(--color-surface);
+    box-shadow: 3px 3px 0 var(--color-ink);
+    cursor: pointer;
+    transition:
+      translate 0.45s var(--ease-out-soft),
+      box-shadow 0.45s var(--ease-out-soft);
+  }
+  .burger span {
+    display: block;
+    width: 100%;
+    height: 2px;
+    border-radius: 2px;
+    background: var(--color-ink);
+  }
+  .burger span:nth-child(2) {
+    width: 65%;
+  }
+  @media (hover: hover) {
+    .burger:hover {
+      translate: 0 -1px;
+      box-shadow: 4px 4px 0 var(--color-ink);
+    }
+  }
+  /* The class nav:hidden only applies from 900px; below that it's display flex */
+  @media (width >= 56.25rem) {
+    .burger {
+      display: none;
+    }
+  }
+</style>

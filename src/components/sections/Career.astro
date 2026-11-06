@@ -1,0 +1,426 @@
+---
+import SectionHeader from "@/components/ui/SectionHeader.astro";
+import { career } from "@/data/career";
+import { useTranslations, type Lang } from "@/i18n/utils";
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+
+const jobs = career.map((job, i) => ({
+  id: `job-${i}`,
+  slug: job.company.toLowerCase().replaceAll(" ", "-"),
+  hasMore: Boolean(job.highlights?.length || job.tech?.length),
+  highlights: job.highlights?.map((h) => h[lang]) ?? [],
+  tech: job.tech ?? [],
+  company: job.company,
+  role: job.role?.[lang],
+  period: job.period
+    ? `${job.period.start} — ${job.period.end ?? t.career.present}`
+    : t.pending.years,
+  mode: job.mode?.[lang],
+  description: job.description?.[lang],
+}));
+---
+
+<section id={t.ids.career} class="section" aria-labelledby="career-title">
+  <div class="container-site flex flex-wrap gap-x-16 gap-y-12">
+    <!-- Title fixed on the left while the timeline advances -->
+    <div class="flex-1 basis-[300px]">
+      <div class="lg:sticky lg:top-28">
+        <SectionHeader id="career-title" eyebrow={t.career.eyebrow} title={t.career.title} />
+      </div>
+    </div>
+
+    <div class="flex-[2_1_480px]">
+      <!-- The lines live outside <ol> (an <ol> only accepts <li>) -->
+      <div class="relative">
+        <span class="line-dotted" aria-hidden="true"></span>
+        <span class="line-cobalt draw" aria-hidden="true"></span>
+        <ol class="timeline">
+          {jobs.map((job, i) => (
+            <li class:list={["job rv", i === 0 && "is-current"]}>
+              <p class="mono-meta">
+                {job.period}
+                {job.mode && ` · ${job.mode}`}
+              </p>
+              <h3 class="h-card mt-2 text-[clamp(26px,3vw,38px)] text-ink">
+                {job.role ? job.role : <span class="pending">{t.pending.role}</span>}{" "}
+                <em class="accent font-normal">{t.career.at}</em> {job.company}
+              </h3>
+              <p class="mt-3 max-w-[60ch] leading-relaxed">
+                {job.description ?? <span class="pending">{t.pending.description}</span>}
+              </p>
+              {job.hasMore && (
+                <button
+                  type="button"
+                  class="more-btn"
+                  aria-haspopup="dialog"
+                  aria-controls={`${job.id}-dialog`}
+                  data-open-dialog={`${job.id}-dialog`}
+                >
+                  {t.career.more}
+                  <span class="more-icon" aria-hidden="true">
+                    +
+                  </span>
+                </button>
+              )}
+            </li>
+          ))}
+        </ol>
+      </div>
+
+      <!-- "See more" modals: native <dialog> (focus trap, Escape, inert background) -->
+      {jobs
+        .filter((job) => job.hasMore)
+        .map((job) => (
+          <dialog
+            id={`${job.id}-dialog`}
+            class="job-modal"
+            aria-labelledby={`${job.id}-title`}
+            data-dialog
+          >
+            <div class="win modal-win">
+              <div class="wbar modal-bar">
+                <span aria-hidden="true">— ×</span>
+                <span aria-hidden="true">{job.slug}.highlights</span>
+                <form method="dialog" class="justify-self-end">
+                  <button class="modal-close">
+                    <span>{t.career.close.toLowerCase()}</span>
+                    <svg width="12" height="12" viewBox="0 0 18 18" aria-hidden="true">
+                      <path
+                        d="M3 3l12 12M15 3L3 15"
+                        stroke="currentColor"
+                        stroke-width="2.5"
+                        stroke-linecap="round"
+                      />
+                    </svg>
+                  </button>
+                </form>
+              </div>
+
+              <div class="modal-body">
+                <p class="mono-meta">
+                  {job.period}
+                  {job.mode && ` · ${job.mode}`}
+                </p>
+                <h3 id={`${job.id}-title`} class="h-card mt-2 text-[clamp(26px,4vw,40px)] text-ink">
+                  {job.role ?? t.pending.role} <em class="accent font-normal">{t.career.at}</em>{" "}
+                  {job.company}
+                </h3>
+                {job.description && <p class="mt-3 leading-relaxed">{job.description}</p>}
+
+                {job.highlights.length > 0 && (
+                  <>
+                    <p class="mono-meta mt-8">{t.career.highlights}</p>
+                    <ul class="more-list mt-3">
+                      {job.highlights.map((h, k) => (
+                        <li style={`--i:${k}`}>{h}</li>
+                      ))}
+                    </ul>
+                  </>
+                )}
+                {job.tech.length > 0 && (
+                  <>
+                    <p class="mono-meta mt-8">{t.career.tech}</p>
+                    <ul class="mt-3 flex flex-wrap gap-1.5">
+                      {job.tech.map((name, k) => (
+                        <li class="chip more-chip" style={`--i:${k}`}>
+                          {name}
+                        </li>
+                      ))}
+                    </ul>
+                  </>
+                )}
+              </div>
+            </div>
+          </dialog>
+        ))}
+
+      <!-- Education (pending) -->
+      <div class="rv mt-12 flex items-start gap-5 rounded-2xl border-[1.5px] border-dashed border-ink p-6">
+        <svg width="40" height="40" viewBox="0 0 40 40" fill="none" aria-hidden="true">
+          <path
+            d="M20 8 2 16l18 8 18-8-18-8Z"
+            fill="#D9C4A3"
+            stroke="#121212"
+            stroke-width="1.5"
+            stroke-linejoin="round"
+          ></path>
+          <path
+            d="M9 20v8c0 2 5 5 11 5s11-3 11-5v-8M36 17v9"
+            stroke="#121212"
+            stroke-width="1.5"
+            stroke-linecap="round"
+          ></path>
+        </svg>
+        <div>
+          <h3 class="h-card text-2xl text-ink">{t.career.studies}</h3>
+          <p class="pending mt-1">{t.pending.description}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .timeline {
+    display: flex;
+    flex-direction: column;
+    gap: 48px;
+    padding-left: 44px;
+  }
+  .line-dotted,
+  .line-cobalt {
+    position: absolute;
+    top: 8px;
+    bottom: 8px;
+    left: 9px;
+    width: 2px;
+  }
+  .line-dotted {
+    background: repeating-linear-gradient(to bottom, #121212 0 2px, transparent 2px 8px);
+    opacity: 0.4;
+  }
+  .line-cobalt {
+    background: var(--color-cobalt);
+  }
+  .job {
+    position: relative;
+  }
+  /* Point on the line */
+  .job::before {
+    content: "";
+    position: absolute;
+    left: -44px;
+    top: 2px;
+    width: 20px;
+    height: 20px;
+    border-radius: 999px;
+    border: 1.5px solid var(--color-ink);
+    background: var(--color-surface);
+  }
+  .job.is-current::before {
+    background: var(--color-cobalt);
+    box-shadow: 0 0 0 5px rgb(43 89 255 / 0.18);
+  }
+  /* ── "See more" button (Annex B curves) ── */
+  .more-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 16px;
+    min-height: 40px;
+    padding: 0 16px;
+    border: 1.5px solid var(--color-ink);
+    border-radius: 999px;
+    background: var(--color-surface);
+    font-family: var(--font-mono);
+    font-size: 13px;
+    cursor: pointer;
+    transition:
+      background 0.4s var(--ease-out-soft),
+      color 0.4s var(--ease-out-soft),
+      translate 0.4s var(--ease-out-soft),
+      box-shadow 0.4s var(--ease-out-soft);
+  }
+  @media (hover: hover) {
+    .more-btn:hover {
+      translate: 0 -2px;
+    }
+  }
+  .more-icon {
+    display: inline-block;
+    font-size: 16px;
+    line-height: 1;
+    transition: rotate 0.45s var(--ease-reveal);
+  }
+  @media (hover: hover) {
+    .more-btn:hover .more-icon {
+      rotate: 90deg;
+    }
+  }
+
+  /* ── Modal (native <dialog>) ── */
+  .job-modal {
+    width: min(680px, calc(100% - 32px));
+    max-width: none;
+    max-height: min(86dvh, 820px);
+    margin: auto;
+    padding: 0 12px 12px 0; /* room for the flat shadow */
+    border: 0;
+    background: transparent;
+    overflow: visible;
+    color: var(--color-body);
+  }
+  .job-modal::backdrop {
+    background: rgb(18 18 18 / 0.45);
+    backdrop-filter: blur(4px);
+  }
+  .modal-win {
+    display: flex;
+    flex-direction: column;
+    max-height: calc(min(86dvh, 820px) - 12px);
+    box-shadow: var(--shadow-flat);
+  }
+  .modal-bar {
+    flex-shrink: 0;
+  }
+  .modal-body {
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    padding: clamp(20px, 4vw, 36px);
+  }
+  /* Close: real pill (border + label + icon), it reads as a button at first glance */
+  .modal-close {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    height: 26px;
+    margin-right: -6px;
+    padding: 0 10px 0 12px;
+    border: 1.5px solid var(--color-ink);
+    border-radius: 999px;
+    background: var(--color-paper);
+    box-shadow: 2px 2px 0 var(--color-ink);
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.02em;
+    color: var(--color-ink);
+    cursor: pointer;
+    transition:
+      background-color 0.4s var(--ease-out-soft),
+      color 0.4s var(--ease-out-soft),
+      translate 0.4s var(--ease-out-soft),
+      box-shadow 0.4s var(--ease-out-soft);
+  }
+  .modal-close svg {
+    transition: rotate 0.45s var(--ease-out-soft);
+  }
+  @media (hover: hover) {
+    .modal-close:hover {
+      background: var(--color-ink);
+      color: var(--color-paper);
+      translate: -1px -1px;
+      box-shadow: 3px 3px 0 var(--color-cobalt);
+    }
+    .modal-close:hover svg {
+      rotate: 90deg;
+    }
+  }
+  .modal-close:active {
+    translate: 1px 1px;
+    box-shadow: 0 0 0 var(--color-ink);
+  }
+  /* Touch target ≥ 44px tall without enlarging the pill */
+  .modal-close::after {
+    content: "";
+    position: absolute;
+    inset: -9px -4px;
+  }
+
+  /* Enter / exit animation (Chrome, Edge, Safari 17.5+; elsewhere it opens without animation) */
+  @media (prefers-reduced-motion: no-preference) {
+    .job-modal,
+    .job-modal::backdrop {
+      transition:
+        opacity 0.35s var(--ease-reveal),
+        transform 0.5s var(--ease-reveal),
+        overlay 0.5s allow-discrete,
+        display 0.5s allow-discrete;
+    }
+    .job-modal {
+      opacity: 0;
+      transform: translateY(24px) scale(0.96);
+    }
+    .job-modal[open] {
+      opacity: 1;
+      transform: none;
+    }
+    .job-modal::backdrop {
+      opacity: 0;
+    }
+    .job-modal[open]::backdrop {
+      opacity: 1;
+    }
+    @starting-style {
+      .job-modal[open] {
+        opacity: 0;
+        transform: translateY(24px) scale(0.96);
+      }
+      .job-modal[open]::backdrop {
+        opacity: 0;
+      }
+    }
+
+    /* Content rising one after another */
+    .job-modal[open] .more-list li,
+    .job-modal[open] .more-chip {
+      animation: modal-in 0.5s var(--ease-reveal) both;
+      animation-delay: calc(0.15s + var(--i) * 0.06s);
+    }
+  }
+  @keyframes modal-in {
+    from {
+      opacity: 0;
+      translate: 0 10px;
+    }
+  }
+
+  .more-list {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+  .more-list li {
+    position: relative;
+    padding-left: 24px;
+    line-height: 1.55;
+  }
+  .more-list li::before {
+    content: "";
+    position: absolute;
+    left: 2px;
+    top: 0.55em;
+    width: 8px;
+    height: 8px;
+    border-radius: 2px;
+    background: var(--color-cobalt);
+    rotate: 45deg;
+  }
+
+  .pending {
+    font-family: var(--font-mono);
+    font-size: 0.8em;
+    font-weight: 400;
+    color: var(--color-muted);
+    letter-spacing: 0;
+  }
+</style>
+
+<script>
+  // Lock the page scroll behind the modal.
+  const lock = (on: boolean) => (document.documentElement.style.overflow = on ? "hidden" : "");
+
+  document.querySelectorAll<HTMLButtonElement>("[data-open-dialog]").forEach((button) => {
+    const dialog = document.getElementById(button.dataset.openDialog!) as HTMLDialogElement | null;
+    if (!dialog) return;
+    button.addEventListener("click", () => {
+      dialog.showModal();
+      lock(true);
+    });
+  });
+
+  document.querySelectorAll<HTMLDialogElement>("[data-dialog]").forEach((dialog) => {
+    dialog.addEventListener("close", () => lock(false));
+    // Clicking the backdrop (outside the window) closes it.
+    dialog.addEventListener("click", (e) => {
+      if (e.target === dialog) dialog.close();
+    });
+  });
+</script>

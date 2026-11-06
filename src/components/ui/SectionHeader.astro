@@ -1,0 +1,24 @@
+---
+interface Props {
+  id: string;
+  eyebrow: string;
+  title: string;
+  /** Cobalt period at the end ("Tecnologías."). */
+  dot?: boolean;
+  meta?: string;
+  class?: string;
+}
+
+const { id, eyebrow, title, dot = true, meta, class: className } = Astro.props;
+---
+
+<header class:list={["flex flex-wrap items-end justify-between gap-x-8 gap-y-3", className]}>
+  <div>
+    <p class="eyebrow rv">{eyebrow}</p>
+    <h2 id={id} class="h-display h-section wipe mt-3 text-ink">
+      {title}
+      {dot && <span class="dot">.</span>}
+    </h2>
+  </div>
+  {meta && <p class="mono-meta rv d1 pb-3">{meta}</p>}
+</header>

@@ -1,0 +1,33 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import ProjectsExplorer from "@/components/projects/ProjectsExplorer.astro";
+import { routes, useTranslations, type Lang } from "@/i18n/utils";
+import { getProjects } from "@/lib/projects";
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+const projects = await getProjects(lang);
+---
+
+<BaseLayout
+  lang={lang}
+  title={`${t.projects.listTitle} · Pedro Acosta`}
+  description={t.projects.listDescription}
+>
+  <section class="section pt-16!" aria-labelledby="list-title">
+    <div class="container-site">
+      <a href={routes(lang).home} class="mono-meta hover:text-cobalt">
+        ← pedro acosta
+      </a>
+      <h1 id="list-title" class="h-display h-section wipe mt-4 mb-10 text-ink">
+        {t.projects.title}
+        <span class="dot">.</span>
+      </h1>
+      <ProjectsExplorer lang={lang} projects={projects} showFeatured={false} />
+    </div>
+  </section>
+</BaseLayout>

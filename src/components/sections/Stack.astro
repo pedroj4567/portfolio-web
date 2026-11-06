@@ -1,0 +1,95 @@
+---
+import SectionHeader from "@/components/ui/SectionHeader.astro";
+import Win from "@/components/ui/Win.astro";
+import { stack } from "@/data/stack";
+import { useTranslations, type Lang } from "@/i18n/utils";
+
+interface Props {
+  lang: Lang;
+}
+
+const t = useTranslations(Astro.props.lang);
+---
+
+<section id={t.ids.stack} class="section" aria-labelledby="stack-title">
+  <div class="container-site">
+    <SectionHeader
+      id="stack-title"
+      eyebrow={t.stack.eyebrow}
+      title={t.stack.title}
+      meta={t.stack.meta}
+    />
+
+    <ul class="mt-14 grid grid-cols-[repeat(auto-fill,minmax(min(100%,320px),1fr))] gap-7">
+      {stack.map((folder, i) => (
+        <li class:list={["pop", i % 3 === 1 && "d1", i % 3 === 2 && "d2"]}>
+          <Win
+            title={t.stack.folders[folder.key]}
+            tone={folder.tone}
+            class="h-full overflow-hidden"
+          >
+            <ul>
+              {folder.tools.map((tool) => (
+                <li class="row">
+                  <span>{tool.name}</span>
+                  <span class="rtag">{tool.tag}</span>
+                </li>
+              ))}
+            </ul>
+          </Win>
+        </li>
+      ))}
+    </ul>
+  </div>
+</section>
+
+<style>
+  .row {
+    position: relative;
+    isolation: isolate;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    min-height: 48px;
+    padding: 0 20px;
+    font-size: 17px;
+    font-weight: 500;
+    color: var(--color-ink);
+    transition: color 0.35s var(--ease-out-soft);
+  }
+  .row + .row {
+    border-top: 1.5px dashed rgb(18 18 18 / 0.15);
+  }
+  .row:last-child {
+    border-radius: 0 0 14.5px 14.5px;
+  }
+  /* Cobalt gradient as an overlay so the transition is smooth */
+  .row::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    border-radius: inherit;
+    background: linear-gradient(90deg, #2b59ff 0%, #5a7dff 100%);
+    opacity: 0;
+    transition: opacity 0.35s var(--ease-out-soft);
+  }
+  .rtag {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--color-muted);
+    transition: color 0.35s var(--ease-out-soft);
+  }
+  @media (hover: hover) {
+    .row:hover {
+      color: var(--color-surface);
+    }
+    .row:hover::before {
+      opacity: 1;
+    }
+    .row:hover .rtag {
+      color: rgb(255 255 255 / 0.8);
+    }
+  }
+</style>

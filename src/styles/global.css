@@ -1,0 +1,92 @@
+@import "tailwindcss";
+@import "./components.css";
+@import "./animations.css";
+
+/* ───────────────────────── Tokens (design doc §2, §3, Annex A) ───────────────────────── */
+@theme {
+  /* Palette */
+  --color-ink: #121212;
+  --color-paper: #f3efe8;
+  --color-cobalt: #2b59ff;
+  --color-sand: #d9c4a3;
+  --color-surface: #ffffff;
+  --color-muted: #5b5750;
+  --color-body: #2e2c29;
+
+  /* Supporting tones for gradients */
+  --color-cobalt-light: #4a73ff;
+  --color-cobalt-deep: #1f45e0;
+  --color-cobalt-night: #16349f;
+  --color-cobalt-soft: #7f9bff;
+  --color-cobalt-soft-2: #5a7dff;
+  --color-sand-light: #e6d6bc;
+  --color-sand-dark: #c9af88;
+  --color-graphite: #3a3833;
+  --color-graphite-deep: #2a2926;
+  --color-cream-light: #f7f4ee;
+  --color-cream-dark: #ece6db;
+
+  /* Typography (self-hosted with Fontsource, imported in BaseLayout) */
+  --font-display: "Bricolage Grotesque Variable", ui-sans-serif, system-ui, sans-serif;
+  --font-sans: "DM Sans Variable", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "DM Mono", ui-monospace, "SFMono-Regular", monospace;
+  --font-serif: "Instrument Serif", ui-serif, Georgia, serif;
+
+  /* Curves */
+  --ease-out-soft: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-reveal: cubic-bezier(0.2, 0.7, 0.2, 1);
+  --ease-curtain: cubic-bezier(0.7, 0, 0.2, 1);
+
+  /* Breakpoints from the doc (§8). Usage: max-nav:hidden, max-tab:…, etc. */
+  --breakpoint-xs: 26.25rem; /* 420px */
+  --breakpoint-md: 47.5rem; /* 760px */
+  --breakpoint-nav: 56.25rem; /* 900px */
+  --breakpoint-lg: 64rem; /* 1024px */
+
+  /* Flat shadows */
+  --shadow-flat: 8px 8px 0 var(--color-ink);
+  --shadow-flat-hover: 11px 11px 0 var(--color-ink);
+}
+
+/* Container: max 1296px + 24px margins (§8) */
+@utility container-site {
+  width: 100%;
+  max-width: calc(1296px + 48px);
+  margin-inline: auto;
+  padding-inline: 24px;
+}
+
+/* ───────────────────────── Base ───────────────────────── */
+@layer base {
+  html {
+    background: var(--color-paper);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  body {
+    min-height: 100dvh;
+    overflow-x: clip;
+  }
+
+  [id] {
+    scroll-margin-top: 72px;
+  }
+
+  :focus-visible {
+    outline: 2.5px solid var(--color-cobalt);
+    outline-offset: 3px;
+    border-radius: 6px;
+  }
+
+  ::selection {
+    background: var(--color-cobalt);
+    color: var(--color-surface);
+  }
+
+  a {
+    transition: color 0.35s var(--ease-out-soft);
+  }
+}

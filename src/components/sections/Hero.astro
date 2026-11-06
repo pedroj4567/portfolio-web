@@ -1,0 +1,204 @@
+---
+import InfraIcon, { type InfraName } from "@/components/hero/InfraIcon.astro";
+import StatusWindow from "@/components/hero/StatusWindow.astro";
+import Win from "@/components/ui/Win.astro";
+import { routes, useTranslations, type Lang } from "@/i18n/utils";
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+const r = routes(lang);
+const [leadA, leadAccent, leadB] = t.hero.lead;
+
+const services: { name: InfraName; tag: string; pos: string; float: string; par?: string }[] = [
+  { name: "db", tag: "db · postgres", pos: "o-db", float: "fb" },
+  { name: "cache", tag: "cache · redis", pos: "o-cache", float: "fc", par: "par2" },
+  { name: "cloud", tag: "cloud · aws", pos: "o-cloud", float: "fa", par: "par" },
+  { name: "queue", tag: "queue · bullmq", pos: "o-queue", float: "fb" },
+];
+---
+
+<section class="hero relative isolate overflow-hidden" aria-labelledby="hero-title">
+  <div class="heroout container-site flex flex-wrap items-center gap-x-12 gap-y-16 py-16 lg:min-h-[calc(100svh-68px)] lg:flex-nowrap">
+    <!-- Text (H1 in real text: LCP and SEO) -->
+    <div class="min-w-0 flex-1 basis-[480px]">
+      <p class="chip rv">&gt;_ {t.hero.pill}</p>
+      <h1 id="hero-title" class="h-display h-hero wipe mt-6 text-ink">
+        Pedro Acosta
+      </h1>
+      <p class="rv d1 mt-6 max-w-[34ch] text-[clamp(20px,2.2vw,26px)] leading-[1.35] text-ink">
+        {leadA} <em class="accent text-[1.15em]">{leadAccent}</em>
+        {` ${leadB}`}
+      </p>
+      <p class="rv d1 mt-3 max-w-[52ch] text-[15px] leading-relaxed text-muted">{t.hero.role}</p>
+
+      <div class="rv d2 mt-8 flex flex-wrap items-center gap-3">
+        <a href={r.section("projects")} class="btn btn-k">
+          {t.hero.ctaProjects} →
+        </a>
+        <a href={r.section("contact")} class="btn btn-o">
+          {t.hero.ctaContact}
+        </a>
+      </div>
+
+      <ul class="rv d3 mono-meta mt-10 flex flex-wrap gap-x-5 gap-y-2" data-flight-start>
+        <li>{t.hero.location}</li>
+        <li aria-hidden="true">·</li>
+        <li>{t.hero.years}</li>
+        <li aria-hidden="true">·</li>
+        <li>Node.js / Go / AWS</li>
+      </ul>
+    </div>
+
+    <!-- Infrastructure composition (decorative + live Status) -->
+    <div class="infra w-full lg:w-auto lg:flex-1 lg:basis-[520px]" data-par-desktop>
+      <div class="o-main pop">
+        <Win title="main.go" tone="cobalt" class="fa" bodyClass="code">
+          <pre class="overflow-hidden p-5 font-mono text-[13px] leading-[1.7] text-white"><code><span class="opacity-60">package</span> main
+
+<span class="opacity-60">func</span> main() {"{"}
+  r := router.New()
+  r.Listen(<span class="text-sand-light">":8080"</span>)
+{"}"}</code></pre>
+        </Win>
+      </div>
+
+      <div class="o-status pop">
+        <StatusWindow class="fc" title={t.hero.status} healthy={t.hero.healthy} />
+      </div>
+
+      {services.map((s) => (
+        <div class:list={["svc", s.pos, s.par]} aria-hidden="true">
+          <div class:list={["svc-inner", s.float]}>
+            <InfraIcon name={s.name} class="svc-icon" />
+            <span class="tag">{s.tag}</span>
+          </div>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>
+
+<style>
+  /* Full-width background behind the content (§2b) */
+  .hero {
+    background:
+      radial-gradient(ellipse 45% 55% at 80% 30%, rgb(43 89 255 / 0.16), transparent 70%),
+      radial-gradient(ellipse 40% 50% at 12% 85%, rgb(217 196 163 / 0.45), transparent 70%);
+  }
+
+  .infra :global(.code) {
+    background: linear-gradient(160deg, #4a73ff 0%, #2b59ff 45%, #1f45e0 100%);
+    border-radius: 0 0 14.5px 14.5px;
+  }
+
+  .svc-inner {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+  }
+  .svc-icon {
+    width: clamp(64px, 7vw, 100px);
+    height: auto;
+  }
+
+  /* > 1024px: free-form composition, 7:8 ratio */
+  @media (width > 64rem) {
+    .infra {
+      position: relative;
+      aspect-ratio: 7 / 8;
+      max-width: 620px;
+    }
+    .infra > * {
+      position: absolute;
+    }
+    .infra .o-main {
+      left: 0;
+      top: 6%;
+      width: 62%;
+      z-index: 1;
+    }
+    .infra .o-status {
+      right: 0;
+      bottom: 8%;
+      width: 66%;
+      z-index: 2;
+    }
+    .o-db {
+      right: 6%;
+      top: 0;
+    }
+    .o-cache {
+      right: 0;
+      top: 34%;
+    }
+    .o-cloud {
+      left: 4%;
+      top: 52%;
+    }
+    .o-queue {
+      left: 0;
+      bottom: 0;
+    }
+  }
+
+  /* ≤ 1024px: grid. main.go full width → Status mounted on its edge → 4 cards */
+  @media (width <= 64rem) {
+    .infra {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 16px;
+    }
+    .infra .o-main {
+      grid-column: 1 / -1;
+    }
+    .infra .o-status {
+      grid-column: 1 / -1;
+      margin: -28px 0 8px 28px;
+      position: relative;
+      z-index: 1;
+    }
+    /* main.go and Status (and the icons inside their cards) stop floating */
+    .infra :global(.fa),
+    .infra :global(.fb),
+    .infra :global(.fc) {
+      animation: none;
+    }
+    .svc {
+      animation: none;
+      transform: none;
+      display: grid;
+      place-items: center;
+      padding: 18px 8px 14px;
+      background: var(--color-surface);
+      border: 1.5px solid var(--color-ink);
+      border-radius: 16px;
+    }
+    .svc-icon {
+      width: min(72px, 70%);
+    }
+  }
+
+  @media (width <= 35rem) {
+    .infra {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  /* ≤ 420px: smaller Status offset and more compact tags */
+  @media (width <= 26.25rem) {
+    .infra .o-status {
+      margin-left: 14px;
+      margin-top: -20px;
+    }
+    .svc :global(.tag) {
+      font-size: 10px;
+      padding: 0 8px;
+      height: 22px;
+    }
+  }
+</style>

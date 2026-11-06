@@ -1,0 +1,306 @@
+/* System components (design doc §4, Annex B). */
+@layer components {
+  /* ── Titles ── */
+  .h-display {
+    font-family: var(--font-display);
+    font-weight: 650;
+    letter-spacing: -0.05em;
+    line-height: 0.92;
+    font-variation-settings: "opsz" 96;
+  }
+  .h-hero {
+    font-size: clamp(64px, 9vw, 128px);
+  }
+  .h-section {
+    font-size: clamp(48px, 7vw, 104px);
+  }
+  .h-talk {
+    font-size: clamp(60px, 11vw, 168px);
+  }
+  .h-card {
+    font-family: var(--font-display);
+    font-weight: 600;
+    letter-spacing: -0.03em;
+    line-height: 1.05;
+  }
+  /* Cobalt period at the end of titles */
+  .dot {
+    color: var(--color-cobalt);
+  }
+  /* Italic accent: one word per block */
+  .accent {
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-weight: 400;
+    letter-spacing: -0.01em;
+  }
+  .eyebrow {
+    font-family: var(--font-mono);
+    font-size: 13px;
+    color: var(--color-muted);
+    letter-spacing: 0.02em;
+  }
+  .mono-meta {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--color-muted);
+  }
+
+  /* ── Window ── */
+  .win {
+    position: relative;
+    background: var(--color-surface);
+    border: 1.5px solid var(--color-ink);
+    border-radius: 16px;
+  }
+  .wbar {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
+    gap: 8px;
+    min-height: 34px;
+    padding: 0 14px;
+    border-bottom: 1.5px solid var(--color-ink);
+    border-radius: 14.5px 14.5px 0 0;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    background: var(--color-surface);
+    color: var(--color-ink);
+  }
+  .wbar > :first-child {
+    letter-spacing: 0.2em;
+  }
+  .wbar > :nth-child(2) {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .wbar > :last-child {
+    justify-self: end;
+    letter-spacing: 0.1em;
+  }
+  .wbar-cobalt {
+    background: var(--color-cobalt);
+    color: var(--color-surface);
+  }
+  .wbar-sand {
+    background: var(--color-sand);
+  }
+  .wbar-ink {
+    background: var(--color-ink);
+    color: var(--color-paper);
+  }
+  .wbar-cream {
+    background: var(--color-paper);
+  }
+
+  /* ── Flat shadow ── */
+  .sh {
+    box-shadow: var(--shadow-flat);
+    transition:
+      box-shadow 0.6s var(--ease-out-soft),
+      translate 0.6s var(--ease-out-soft);
+  }
+  @media (hover: hover) {
+    .sh:hover {
+      box-shadow: var(--shadow-flat-hover);
+      translate: -2px -2px;
+    }
+  }
+
+  /* ── Buttons ── */
+  .btn {
+    position: relative;
+    isolation: isolate;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    min-height: 52px;
+    padding: 0 26px;
+    border: 1.5px solid var(--color-ink);
+    border-radius: 999px;
+    font-weight: 600;
+    font-size: 16px;
+    white-space: nowrap;
+    overflow: hidden;
+    transition:
+      background-color 0.45s var(--ease-out-soft),
+      color 0.45s var(--ease-out-soft),
+      translate 0.45s var(--ease-out-soft);
+  }
+  .btn-sm {
+    min-height: 44px;
+    padding: 0 18px;
+    font-size: 14px;
+  }
+  /* Primary: black gradient → cobalt gradient (overlay, because gradients don't animate) */
+  .btn-k {
+    background: linear-gradient(135deg, var(--color-ink) 0%, var(--color-graphite) 100%);
+    color: var(--color-paper);
+  }
+  .btn-k::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background: linear-gradient(135deg, var(--color-cobalt) 0%, var(--color-cobalt-deep) 100%);
+    opacity: 0;
+    transition: opacity 0.45s var(--ease-out-soft);
+  }
+  .btn-o {
+    background: transparent;
+    color: var(--color-ink);
+  }
+  @media (hover: hover) {
+    .btn:hover {
+      translate: 0 -2px;
+    }
+    .btn-k:hover::before {
+      opacity: 1;
+    }
+    .btn-o:hover {
+      background: var(--color-surface);
+    }
+  }
+  .btn[aria-disabled="true"] {
+    opacity: 0.45;
+    pointer-events: none;
+  }
+
+  /* ── Chip and floating tag ── */
+  .chip {
+    display: inline-flex;
+    align-items: center;
+    height: 28px;
+    padding: 0 12px;
+    border: 1.5px solid var(--color-ink);
+    border-radius: 999px;
+    background: var(--color-surface);
+    font-family: var(--font-mono);
+    font-size: 12px;
+    white-space: nowrap;
+  }
+  .tag {
+    display: inline-flex;
+    align-items: center;
+    height: 24px;
+    padding: 0 10px;
+    border: 1.5px solid var(--color-ink);
+    border-radius: 999px;
+    background: var(--color-surface);
+    font-family: var(--font-mono);
+    font-size: 11px;
+    white-space: nowrap;
+  }
+
+  /* ── Language selector ── */
+  .lang {
+    display: inline-flex;
+    align-items: center;
+    height: 40px;
+    padding: 3px;
+    gap: 2px;
+    border: 1.5px solid var(--color-ink);
+    border-radius: 999px;
+    background: var(--color-surface);
+  }
+  .lb {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    min-width: 40px;
+    padding: 0 10px;
+    border-radius: 999px;
+    font-family: var(--font-mono);
+    font-size: 12px;
+    font-weight: 500;
+    transition:
+      background-color 0.4s var(--ease-out-soft),
+      color 0.4s var(--ease-out-soft);
+  }
+  .lb[aria-current="true"] {
+    background: var(--color-ink);
+    color: var(--color-paper);
+  }
+  @media (hover: hover) {
+    .lb:not([aria-current="true"]):hover {
+      background: var(--color-paper);
+    }
+  }
+
+  /* ── Filter button ── */
+  .fbtn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    min-height: 44px;
+    padding: 0 16px;
+    border: 1.5px solid var(--color-ink);
+    border-radius: 999px;
+    background: var(--color-surface);
+    font-weight: 500;
+    font-size: 15px;
+    cursor: pointer;
+    transition:
+      background-color 0.4s var(--ease-out-soft),
+      color 0.4s var(--ease-out-soft),
+      translate 0.4s var(--ease-out-soft),
+      box-shadow 0.4s var(--ease-out-soft);
+  }
+  .fbtn .count {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    opacity: 0.7;
+  }
+  .fbtn[aria-pressed="true"] {
+    background: linear-gradient(135deg, var(--color-ink) 0%, var(--color-graphite) 100%);
+    color: var(--color-paper);
+    box-shadow: 3px 3px 0 var(--color-cobalt);
+  }
+  @media (hover: hover) {
+    .fbtn:hover {
+      translate: 0 -2px;
+    }
+  }
+
+  /* ── Selection marks (like in an editor) ── */
+  .sel {
+    position: relative;
+    display: inline-block;
+    padding: 0 0.12em;
+    outline: 1.5px dashed var(--color-cobalt);
+    outline-offset: 3px;
+  }
+  .sel::before,
+  .sel::after {
+    content: "";
+    position: absolute;
+    width: 7px;
+    height: 7px;
+    background: var(--color-cobalt);
+  }
+  .sel::before {
+    top: -7px;
+    left: -7px;
+  }
+  .sel::after {
+    bottom: -7px;
+    right: -7px;
+  }
+
+  /* ── Status points ── */
+  .status-dot {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    border-radius: 999px;
+    background: var(--color-cobalt);
+  }
+
+  /* ── Section ── */
+  .section {
+    padding-block: clamp(80px, 12vw, 160px);
+  }
+}

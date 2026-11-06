@@ -1,0 +1,88 @@
+---
+import ProjectLinks from "./ProjectLinks.astro";
+import { routes, useTranslations, type Lang } from "@/i18n/utils";
+import type { Project } from "@/lib/projects";
+
+interface Props {
+  project: Project;
+  lang: Lang;
+}
+
+const { project: p, lang } = Astro.props;
+const t = useTranslations(lang);
+
+// Charging station panel (Disart Energy · OCPP), §5.05
+const stations = [
+  { id: "EST-01", status: "Charging", color: "#2B59FF", kw: "22.4 kW" },
+  { id: "EST-02", status: "Available", color: "#FFFFFF", kw: "0.0 kW" },
+  { id: "EST-03", status: "Faulted", color: "#121212", kw: "—" },
+];
+---
+
+<article
+  class="win sh pop flex flex-wrap overflow-hidden"
+  data-project
+  data-categories={p.categories.join(" ")}
+  aria-labelledby="featured-title"
+>
+  <div class="panel flex-[1_1_380px] p-6 sm:p-8" aria-hidden="true">
+    <div class="win">
+      <div class="wbar wbar-ink">
+        <span>— ×</span>
+        <span>ocpp · stations</span>
+        <span>•••</span>
+      </div>
+      <ul class="divide-y-[1.5px] divide-dashed divide-ink/15 font-mono text-[13px]">
+        {stations.map((s) => (
+          <li class="flex items-center gap-3 px-4 py-3">
+            <span
+              class="size-3 rounded-full border-[1.5px] border-ink"
+              style={`background:${s.color}`}
+            />
+            <span class="font-medium text-ink">{s.id}</span>
+            <span class="flex-1 text-muted">{s.status}</span>
+            <span class="tabular-nums">{s.kw}</span>
+          </li>
+        ))}
+      </ul>
+      <p class="border-t-[1.5px] border-ink px-4 py-2 font-mono text-[11px] text-muted">
+        OCPP 1.6J · ws://central-system
+      </p>
+    </div>
+  </div>
+
+  <div class="flex flex-[1_1_380px] flex-col p-6 sm:p-8">
+    <p class="chip self-start">★ {t.projects.featured}</p>
+    <h3 id="featured-title" class="h-card mt-4 text-[clamp(34px,4vw,52px)] text-ink">
+      <a href={routes(lang).project(p.slug)} class="hover:text-cobalt">
+        {p.title}
+        <span class="sr-only">
+          {" "}
+          — {t.projects.caseStudy} {p.title}
+        </span>
+      </a>
+    </h3>
+    <p class="mt-3 max-w-[48ch] text-lg leading-relaxed">{p.summary}</p>
+    <ul class="mt-5 flex flex-wrap gap-1.5" aria-label={t.projects.stackLabel}>
+      {p.stack.map((s) => (
+        <li class="chip">{s}</li>
+      ))}
+    </ul>
+    <div class="mt-auto pt-8">
+      <ProjectLinks lang={lang} links={p.links} title={p.title} />
+    </div>
+  </div>
+</article>
+
+<style>
+  .panel {
+    background:
+      radial-gradient(ellipse 60% 55% at 75% 15%, rgb(255 255 255 / 0.22), transparent 70%),
+      linear-gradient(160deg, #4a73ff 0%, #2b59ff 45%, #1f45e0 100%);
+    display: grid;
+    align-content: center;
+  }
+  article[hidden] {
+    display: none;
+  }
+</style>

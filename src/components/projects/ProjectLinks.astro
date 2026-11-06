@@ -1,0 +1,47 @@
+---
+import { useTranslations, type Lang } from "@/i18n/utils";
+import type { Project } from "@/lib/projects";
+
+interface Props {
+  lang: Lang;
+  links: Project["links"];
+  title: string;
+}
+
+const { lang, links, title } = Astro.props;
+const t = useTranslations(lang);
+// While a project has no URL (pending), the button is shown disabled.
+---
+
+<div class="flex flex-wrap gap-2">
+  {links.code ? (
+    <a
+      href={links.code}
+      class="btn btn-k btn-sm"
+      target="_blank"
+      rel="noopener"
+      aria-label={`${t.projects.code}: ${title}`}
+    >
+      {t.projects.code}
+    </a>
+  ) : (
+    <span class="btn btn-k btn-sm" aria-disabled="true">
+      {t.projects.code}
+    </span>
+  )}
+  {links.demo ? (
+    <a
+      href={links.demo}
+      class="btn btn-o btn-sm"
+      target="_blank"
+      rel="noopener"
+      aria-label={`${t.projects.demo}: ${title}`}
+    >
+      {t.projects.demo} ↗
+    </a>
+  ) : (
+    <span class="btn btn-o btn-sm" aria-disabled="true">
+      {t.projects.demo} ↗
+    </span>
+  )}
+</div>

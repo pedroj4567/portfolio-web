@@ -1,0 +1,79 @@
+---
+import Win from "@/components/ui/Win.astro";
+
+interface Props {
+  class?: string;
+  title: string;
+  healthy: string;
+}
+
+const { class: className, title, healthy } = Astro.props;
+
+// One row per service, with a circle the color of its object in the hero.
+const services = [
+  { name: "api · go", color: "#2B59FF", base: 12 },
+  { name: "db · postgres", color: "#D9C4A3", base: 4 },
+  { name: "queue · bullmq", color: "#121212", base: 7 },
+  { name: "cache · redis", color: "#FFFFFF", base: 1 },
+  { name: "cloud · aws", color: "#F3EFE8", base: 22 },
+];
+---
+
+<Win title={title} class={className} bodyClass="p-4 xs:p-5 font-mono text-[12px] xs:text-[13px]">
+  <p class="text-muted">
+    $ pedro status --watch
+    <span class="pulse ml-0.5 inline-block h-[1em] w-[7px] translate-y-[2px] bg-ink"></span>
+  </p>
+  <ul class="mt-3 space-y-2" data-status>
+    {services.map((s) => (
+      <li class="flex items-center gap-3">
+        <span
+          class="size-3 shrink-0 rounded-full border-[1.5px] border-ink"
+          style={`background:${s.color}`}
+          aria-hidden="true"
+        />
+        <span class="flex-1 truncate">{s.name}</span>
+        <span class="tabular-nums text-muted" data-latency={s.base}>
+          {s.base}ms
+        </span>
+      </li>
+    ))}
+  </ul>
+  <p class="mt-3 flex items-center gap-2 border-t-[1.5px] border-dashed border-ink/25 pt-3">
+    <span class="status-dot pulse" aria-hidden="true"></span>
+    {healthy}
+  </p>
+</Win>
+
+<script>
+  /*
+   * Latencies that change every 1.6s (§5 Hero). It only runs while the
+   * window is visible and the tab is active: zero cost outside the viewport.
+   */
+  document.querySelectorAll<HTMLElement>("[data-status]").forEach((list) => {
+    const cells = [...list.querySelectorAll<HTMLElement>("[data-latency]")];
+    let timer: number | undefined;
+
+    const tick = () =>
+      cells.forEach((c) => {
+        const base = Number(c.dataset.latency);
+        const value = Math.max(1, Math.round(base + (Math.random() - 0.4) * base * 0.6));
+        c.textContent = `${value}ms`;
+      });
+
+    const start = () => (timer ??= window.setInterval(tick, 1600));
+    const stop = () => {
+      window.clearInterval(timer);
+      timer = undefined;
+    };
+
+    let visible = false;
+    new IntersectionObserver(([entry]) => {
+      visible = entry.isIntersecting;
+      visible && !document.hidden ? start() : stop();
+    }).observe(list);
+    document.addEventListener("visibilitychange", () =>
+      visible && !document.hidden ? start() : stop(),
+    );
+  });
+</script>

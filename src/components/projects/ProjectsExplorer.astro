@@ -1,0 +1,163 @@
+---
+import FeaturedProject from "./FeaturedProject.astro";
+import ProjectCard from "./ProjectCard.astro";
+import { useTranslations, type Lang } from "@/i18n/utils";
+import { countByCategory, type Project } from "@/lib/projects";
+
+interface Props {
+  lang: Lang;
+  projects: Project[];
+  showFeatured?: boolean;
+}
+
+const { lang, projects, showFeatured = true } = Astro.props;
+const t = useTranslations(lang);
+const featured = showFeatured ? projects.find((p) => p.featured) : undefined;
+const filters = [{ id: "all", label: t.projects.all, count: projects.length }].concat(
+  countByCategory(projects).map((c) => ({ ...c, label: t.categories[c.id] })),
+);
+---
+
+<!--
+  Client-side filter with no fetch: all cards are already in the HTML
+  (good for SEO) and the script only toggles `hidden`. ~0.5 KB of JS.
+-->
+<div data-explorer data-label={t.projects.title.toLowerCase()}>
+  <div
+    class="rv flex flex-wrap items-center gap-2"
+    role="group"
+    aria-label={t.projects.filterLabel}
+  >
+    <span class="mono-meta mr-2 max-md:hidden" aria-hidden="true">
+      {t.projects.prompt}
+    </span>
+    {filters.map((f) => (
+      <button
+        type="button"
+        class="fbtn"
+        data-filter={f.id}
+        aria-pressed={f.id === "all" ? "true" : "false"}
+      >
+        {f.label} <span class="count">({f.count})</span>
+      </button>
+    ))}
+  </div>
+
+  {featured && (
+    <div class="mt-10">
+      <FeaturedProject project={featured} lang={lang} />
+    </div>
+  )}
+
+  <ul class="mt-10 grid grid-cols-[repeat(auto-fill,minmax(min(100%,340px),1fr))] gap-8">
+    {projects.map((p, i) => (
+      <ProjectCard project={p} lang={lang} index={i} />
+    ))}
+  </ul>
+
+  <p class="mono-meta mt-8 text-center" data-empty hidden>
+    {t.projects.empty}
+  </p>
+  <p class="sr-only" aria-live="polite" data-live></p>
+</div>
+
+<script>
+  document.querySelectorAll<HTMLElement>("[data-explorer]").forEach((root) => {
+    const buttons = [...root.querySelectorAll<HTMLButtonElement>("[data-filter]")];
+    const items = [...root.querySelectorAll<HTMLElement>("[data-project]")];
+    const empty = root.querySelector<HTMLElement>("[data-empty]");
+    const live = root.querySelector<HTMLElement>("[data-live]");
+
+    const apply = (filter: string) => {
+      let visible = 0;
+      for (const item of items) {
+        const show = filter === "all" || item.dataset.categories!.split(" ").includes(filter);
+        item.hidden = !show;
+        if (show && item.tagName === "LI") visible++;
+      }
+      buttons.forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.filter === filter)));
+      if (empty) empty.hidden = visible > 0;
+      if (live) live.textContent = `${visible} ${root.dataset.label}`;
+    };
+
+    // Filter animation (§7, Annex C curves): leaving cards fade out, the rest slide to
+    // their new place (FLIP) and new ones pop in staggered. Plain WAAPI, no library.
+    const reduce = matchMedia("(prefers-reduced-motion: reduce)");
+    const EASE = "cubic-bezier(0.2, 0.7, 0.2, 1)";
+    let running: Animation[] = [];
+    let token = 0;
+
+    const stopRunning = () => {
+      running.forEach((a) => a.cancel());
+      running = [];
+    };
+
+    const run = async (filter: string) => {
+      const current = ++token;
+      stopRunning();
+      if (reduce.matches) return apply(filter);
+
+      const matches = (el: HTMLElement) =>
+        filter === "all" || el.dataset.categories!.split(" ").includes(filter);
+      const leaving = items.filter((el) => !el.hidden && !matches(el));
+
+      running = leaving.map((el) =>
+        el.animate([{ opacity: 1 }, { opacity: 0, transform: "scale(0.94) translateY(12px)" }], {
+          duration: 220,
+          easing: "ease-in",
+          fill: "forwards",
+        }),
+      );
+      await Promise.all(running.map((a) => a.finished.catch(() => undefined)));
+      if (current !== token) return;
+      stopRunning();
+
+      const before = new Map(
+        items.map((el) => [el, el.hidden ? null : el.getBoundingClientRect()]),
+      );
+      apply(filter);
+
+      let entering = 0;
+      for (const el of items) {
+        if (el.hidden) continue;
+        const prev = before.get(el);
+        if (!prev) {
+          running.push(
+            el.animate(
+              [
+                { opacity: 0, transform: "scale(0.9) translateY(28px) rotate(-1.5deg)" },
+                { opacity: 1, transform: "none" },
+              ],
+              { duration: 520, delay: 60 * entering++, easing: EASE, fill: "backwards" },
+            ),
+          );
+          continue;
+        }
+        const now = el.getBoundingClientRect();
+        const dx = prev.left - now.left;
+        const dy = prev.top - now.top;
+        if (dx || dy) {
+          running.push(
+            el.animate([{ transform: `translate(${dx}px, ${dy}px)` }, { transform: "none" }], {
+              duration: 560,
+              easing: EASE,
+            }),
+          );
+        }
+      }
+      if (empty && !empty.hidden) {
+        running.push(
+          empty.animate([{ opacity: 0, transform: "translateY(12px)" }, { opacity: 1 }], {
+            duration: 400,
+            easing: EASE,
+          }),
+        );
+      }
+    };
+
+    root.addEventListener("click", (e) => {
+      const btn = (e.target as Element).closest<HTMLButtonElement>("[data-filter]");
+      if (btn && btn.getAttribute("aria-pressed") !== "true") run(btn.dataset.filter!);
+    });
+  });
+</script>

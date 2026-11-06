@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://pedroacosta.dev/sitemap-index.xml

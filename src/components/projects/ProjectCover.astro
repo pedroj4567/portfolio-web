@@ -1,0 +1,168 @@
+---
+import type { Project } from "@/lib/projects";
+
+interface Props {
+  cover: Project["cover"];
+  class?: string;
+}
+
+const { cover, class: className } = Astro.props;
+const ink = "#121212";
+---
+
+<!-- Decorative illustration: the description is in the card text -->
+<div class:list={["cover", `cover-${cover}`, className]} aria-hidden="true">
+  <svg viewBox="0 0 400 250" fill="none" class="h-full w-full">
+    {cover === "disart" && (
+      <g stroke={ink} stroke-width="1.5">
+        <rect x="140" y="50" width="120" height="160" rx="14" fill="#fff" />
+        <rect x="158" y="70" width="84" height="48" rx="6" fill="#F3EFE8" />
+        <path d="M204 80l-14 18h10l-4 12 14-18h-10l4-12Z" fill="#2B59FF" stroke-linejoin="round" />
+        <circle cx="200" cy="150" r="14" fill="#D9C4A3" />
+        <path d="M260 120h30a12 12 0 0 1 12 12v50a10 10 0 0 0 20 0v-30" stroke="#fff" />
+        <rect x="120" y="208" width="160" height="10" rx="5" fill={ink} />
+      </g>
+    )}
+    {cover === "antorcha" && (
+      <g stroke="#F3EFE8" stroke-width="1.5">
+        <path
+          d="M200 40c30 40 60 62 60 108a60 60 0 0 1-120 0c0-28 16-40 26-62 6 20 16 28 24 30-4-28 2-52 10-76Z"
+          fill="#2B59FF"
+        />
+        <path d="M200 112c14 18 24 28 24 46a24 24 0 0 1-48 0c0-14 12-24 24-46Z" fill="#D9C4A3" />
+        <path d="M150 222h100" stroke-linecap="round" />
+      </g>
+    )}
+    {cover === "kyc" && (
+      <g stroke={ink} stroke-width="1.5">
+        <rect x="100" y="62" width="200" height="126" rx="12" fill="#fff" />
+        <rect x="118" y="84" width="54" height="66" rx="6" fill="#E6D6BC" />
+        <circle cx="145" cy="108" r="12" fill="#F3EFE8" />
+        <path d="M126 146c4-14 34-14 38 0" />
+        <path d="M188 92h92M188 112h70M188 132h84M118 166h162" stroke-linecap="round" />
+        <path
+          d="M84 74V50h24M292 50h24v24M316 176v24h-24M108 200H84v-24"
+          stroke="#2B59FF"
+          stroke-width="3"
+          stroke-linecap="round"
+        />
+        <path d="M84 125h232" stroke="#2B59FF" stroke-width="2" stroke-dasharray="6 6" />
+      </g>
+    )}
+    {cover === "backoffice" && (
+      <g stroke={ink} stroke-width="1.5">
+        {[60, 170, 280].map((x) => (
+          <g>
+            <rect x={x} y="50" width="60" height="50" rx="10" fill="#fff" />
+            <text
+              x={x + 30}
+              y="83"
+              text-anchor="middle"
+              font-family="DM Mono, monospace"
+              font-size="20"
+              fill={ink}
+              stroke="none"
+            >
+              λ
+            </text>
+            <path d={`M${x + 30} 100v40`} stroke-dasharray="4 4" />
+          </g>
+        ))}
+        <path d="M90 140h220" />
+        <path d="M200 140v20" />
+        <ellipse cx="200" cy="168" rx="44" ry="10" fill="#D9C4A3" />
+        <path d="M156 168v28c0 5.5 19.7 10 44 10s44-4.5 44-10v-28" fill="#D9C4A3" />
+      </g>
+    )}
+    {cover === "tasks" && (
+      <g stroke={ink} stroke-width="1.5">
+        <rect x="110" y="34" width="180" height="182" rx="14" fill="#fff" />
+        {[0, 1, 2, 3].map((i) => (
+          <g>
+            <rect
+              x="132"
+              y={60 + i * 38}
+              width="22"
+              height="22"
+              rx="5"
+              fill={i < 2 ? "#2B59FF" : "#fff"}
+            />
+            {i < 2 && (
+              <path
+                d={`M137 ${71 + i * 38}l4 4 8-8`}
+                stroke="#fff"
+                stroke-width="2"
+                stroke-linecap="round"
+              />
+            )}
+            <path
+              d={`M168 ${71 + i * 38}h${i % 2 ? 70 : 96}`}
+              stroke-linecap="round"
+              opacity={i < 2 ? 0.4 : 1}
+            />
+          </g>
+        ))}
+      </g>
+    )}
+    {cover === "analytics" && (
+      <g stroke={ink} stroke-width="1.5">
+        {[70, 110, 90, 140, 120, 160, 130].map((h, i) => (
+          <rect
+            x={70 + i * 38}
+            y={210 - h}
+            width="24"
+            height={h}
+            rx="4"
+            fill={i >= 2 && i <= 4 ? "#D9C4A3" : "#fff"}
+          />
+        ))}
+        <rect
+          x="138"
+          y="40"
+          width="128"
+          height="180"
+          rx="10"
+          stroke="#fff"
+          stroke-width="2"
+          stroke-dasharray="7 6"
+        />
+        <path d="M60 212h290" />
+      </g>
+    )}
+  </svg>
+</div>
+
+<style>
+  .cover {
+    aspect-ratio: 16 / 10;
+    overflow: hidden;
+  }
+  .cover-disart,
+  .cover-analytics {
+    background:
+      radial-gradient(ellipse 60% 55% at 75% 15%, rgb(255 255 255 / 0.22), transparent 70%),
+      linear-gradient(160deg, #4a73ff 0%, #2b59ff 45%, #1f45e0 100%);
+  }
+  .cover-analytics {
+    background:
+      radial-gradient(ellipse 60% 55% at 20% 15%, rgb(255 255 255 / 0.2), transparent 70%),
+      linear-gradient(160deg, #4a73ff 0%, #2b59ff 45%, #1f45e0 100%);
+  }
+  .cover-antorcha {
+    background:
+      radial-gradient(ellipse 50% 60% at 50% 45%, rgb(43 89 255 / 0.35), transparent 70%),
+      linear-gradient(160deg, #2a2926, #121212);
+  }
+  .cover-kyc {
+    background: linear-gradient(160deg, #e6d6bc 0%, #d9c4a3 50%, #c9af88 100%);
+  }
+  .cover-backoffice {
+    background:
+      radial-gradient(ellipse 55% 60% at 80% 20%, rgb(43 89 255 / 0.12), transparent 70%),
+      linear-gradient(180deg, #f7f4ee, #ece6db);
+  }
+  .cover-tasks {
+    background:
+      radial-gradient(ellipse 60% 70% at 30% 80%, rgb(217 196 163 / 0.45), transparent 70%), #fff;
+  }
+</style>

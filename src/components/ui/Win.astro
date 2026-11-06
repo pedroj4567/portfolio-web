@@ -1,0 +1,38 @@
+---
+import type { HTMLTag } from "astro/types";
+
+export type WinTone = "white" | "cobalt" | "sand" | "ink" | "cream";
+
+interface Props {
+  title?: string;
+  tone?: WinTone;
+  as?: HTMLTag;
+  shadow?: boolean;
+  class?: string;
+  bodyClass?: string;
+  [key: string]: unknown;
+}
+
+const {
+  title = "",
+  tone = "white",
+  as: Tag = "div",
+  shadow = true,
+  class: className,
+  bodyClass,
+  ...rest
+} = Astro.props;
+
+const toneClass = tone === "white" ? "" : `wbar-${tone}`;
+---
+
+<Tag class:list={["win", shadow && "sh", className]} {...rest}>
+  <div class:list={["wbar", toneClass]} aria-hidden="true">
+    <span>— ×</span>
+    <span>{title}</span>
+    <span>•••</span>
+  </div>
+  <div class={bodyClass}>
+    <slot />
+  </div>
+</Tag>

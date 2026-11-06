@@ -1,0 +1,126 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import ProjectCover from "@/components/projects/ProjectCover.astro";
+import ProjectLinks from "@/components/projects/ProjectLinks.astro";
+import Win from "@/components/ui/Win.astro";
+import { routes, useTranslations, type Lang } from "@/i18n/utils";
+import type { Project } from "@/lib/projects";
+
+interface Props {
+  lang: Lang;
+  project: Project;
+}
+
+const { lang, project: p } = Astro.props;
+const t = useTranslations(lang);
+const r = routes(lang);
+const site = Astro.site!.href.replace(/\/$/, "");
+
+// Case study: SoftwareSourceCode (§10b)
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "SoftwareSourceCode",
+  name: p.title,
+  description: p.summary,
+  inLanguage: lang,
+  url: new URL(Astro.url.pathname, Astro.site).href,
+  ...(p.links.code && { codeRepository: p.links.code }),
+  programmingLanguage: p.stack,
+  author: { "@type": "Person", name: "Pedro Acosta", url: site },
+};
+
+const cs = p.caseStudy;
+---
+
+<BaseLayout
+  lang={lang}
+  title={`${p.title} · ${t.projects.caseStudyShort} · Pedro Acosta`}
+  description={p.summary}
+  ogType="article"
+  jsonLd={jsonLd}
+>
+  <article class="section pt-16!" aria-labelledby="project-title">
+    <div class="container-site">
+      <a href={r.projects} class="mono-meta hover:text-cobalt">
+        ← {t.projects.back}
+      </a>
+
+      <header class="mt-6 flex flex-wrap items-end justify-between gap-6">
+        <div>
+          <p class="mono-meta rv">{p.categories.map((c) => t.categories[c]).join(" / ")}</p>
+          <h1 id="project-title" class="h-display h-section wipe mt-3 text-ink">
+            {p.title}
+            <span class="dot">.</span>
+          </h1>
+        </div>
+        <div class="rv d1">
+          <ProjectLinks lang={lang} links={p.links} title={p.title} />
+        </div>
+      </header>
+
+      <p class="rv d1 mt-8 max-w-[52ch] text-[clamp(20px,2.2vw,26px)] leading-snug text-ink">
+        {p.summary}
+      </p>
+
+      <div class="win sh pop mt-12 overflow-hidden">
+        <div class="wbar" aria-hidden="true">
+          <span>— ×</span>
+          <span>{p.slug}</span>
+          <span>•••</span>
+        </div>
+        <ProjectCover cover={p.cover} class="max-h-[520px] w-full" />
+      </div>
+
+      <div class="mt-16 flex flex-wrap gap-x-12 gap-y-10">
+        <aside class="flex-1 basis-[240px] space-y-6">
+          <Win title={t.projects.stackLabel.toLowerCase()} bodyClass="p-5" class="rv">
+            <ul class="flex flex-wrap gap-1.5">
+              {p.stack.map((s) => (
+                <li class="chip">{s}</li>
+              ))}
+            </ul>
+          </Win>
+        </aside>
+
+        <div class="flex-[3_1_480px] space-y-12 text-lg leading-relaxed">
+          {cs ? (
+            <>
+              <section class="rv">
+                <h2 class="h-card text-3xl text-ink">{t.projects.problem}</h2>
+                <p class="mt-3">{cs.problem}</p>
+              </section>
+              <section class="rv">
+                <h2 class="h-card text-3xl text-ink">{t.projects.solution}</h2>
+                <p class="mt-3">{cs.solution}</p>
+              </section>
+              {cs.decisions.length > 0 && (
+                <section class="rv">
+                  <h2 class="h-card text-3xl text-ink">{t.projects.decisions}</h2>
+                  <ul class="mt-3 list-disc space-y-1 pl-5">
+                    {cs.decisions.map((d) => (
+                      <li>{d}</li>
+                    ))}
+                  </ul>
+                </section>
+              )}
+              {cs.results.length > 0 && (
+                <section class="rv">
+                  <h2 class="h-card text-3xl text-ink">{t.projects.results}</h2>
+                  <ul class="mt-3 list-disc space-y-1 pl-5">
+                    {cs.results.map((d) => (
+                      <li>{d}</li>
+                    ))}
+                  </ul>
+                </section>
+              )}
+            </>
+          ) : (
+            <p class="mono-meta rounded-2xl border-[1.5px] border-dashed border-ink p-6">
+              {t.pending.description}
+            </p>
+          )}
+        </div>
+      </div>
+    </div>
+  </article>
+</BaseLayout>

@@ -1,43 +1,67 @@
-# Astro Starter Kit: Minimal
+# Astro App
 
-```sh
-pnpm create astro@latest -- --template minimal
-```
+Pedro Acosta's portfolio. **Astro 7**, **Tailwind CSS v4**, and **pnpm**.
 
-> 🧑‍🚀 **Seasoned astronaut?** Delete this file. Have fun!
+## Commands
 
-## 🚀 Project Structure
+| Command             | Action                                         |
+| ------------------- | ---------------------------------------------- |
+| `pnpm install`      | Installs dependencies                          |
+| `pnpm dev`          | Dev server at `localhost:4321`                 |
+| `pnpm build`        | Production build in `./dist/`                  |
+| `pnpm preview`      | Previews the build                             |
+| `pnpm check`        | Type checking (`astro check`)                  |
+| `pnpm format`       | Formats with Prettier (sorts Tailwind classes) |
+| `pnpm format:check` | Checks formatting (for CI)                     |
 
-Inside of your Astro project, you'll see the following folders and files:
+## Structure
 
 ```text
-/
-├── public/
-├── src/
-│   └── pages/
-│       └── index.astro
-└── package.json
+src/
+├── content/projects.json   # ← PROJECTS: edited by hand (ES/EN in each field)
+├── content.config.ts       # Zod schema: validates the JSON at build time
+├── data/                   # Static data: stack.ts, career.ts (+ contact)
+├── i18n/                   # ui.ts (ES/EN dictionaries, typed) + utils.ts (routes)
+├── lib/
+│   ├── projects.ts         # Queries to the collection (memoized, already translated)
+│   └── scroll-fallback.ts  # Motion, only for browsers without animation-timeline
+├── components/
+│   ├── ui/                 # Win, SectionHeader, LangSwitch
+│   ├── layout/             # Navbar (+ progress), MobileMenu, Footer
+│   ├── hero/               # InfraIcon, StatusWindow
+│   ├── projects/           # Card, Featured, Cover, Explorer (filter), Links
+│   ├── sections/           # Hero, About, Stack, Career, Projects, Contact
+│   └── seo/Seo.astro       # canonical, hreflang, OG, JSON-LD
+├── views/                  # One page per type (Home, list, detail, 404)
+├── pages/                  # Thin routes: /es/…, /en/…, 404, / (redirect)
+└── styles/                 # global (tokens), components, animations
 ```
 
-Astro looks for `.astro` or `.md` files in the `src/pages/` directory. Each page is exposed as a route based on its file name.
+### Adding or editing a project
 
-There's nothing special about `src/components/`, but that's where we like to put any Astro/React/Vue/Svelte/Preact components.
+Edit `src/content/projects.json`. Required fields: `id` (slug), `order`, `cover`,
+`categories`, `stack`, `title.{es,en}`, `summary.{es,en}`. Optional: `featured`,
+`links.{code,demo}` (URL or `null`) and `caseStudy.{es,en}`. If something is invalid,
+`pnpm build` fails with the exact field. The filter counters, the cards, and
+the `/es/proyectos/<id>/` and `/en/projects/<id>/` pages are generated automatically.
 
-Any static assets, like images, can be placed in the `public/` directory.
+### Performance and lazy loading
 
-## 🧞 Commands
+- **0 KB of JSON in the browser**: projects are read once per build and rendered to HTML.
+- **Minimal JS (~1 KB per island)**: menu, filter, Status, and language.
+- **Motion lazy-loaded**: `import()` only if the browser doesn't support `animation-timeline`
+  (Safari/Firefox). Chrome/Edge never download it.
+- **Status** only animates while it's visible and the tab is active.
+- **Cards** with `content-visibility: auto`: they aren't painted until they get close to the viewport.
+- **Self-hosted fonts** (Fontsource, Latin subset) + `preload` of the H1 font.
+- **Prefetch** of internal links on hover.
 
-All commands are run from the root of the project, from a terminal:
+### Design pending items (doc §11)
 
-| Command                   | Action                                           |
-| :------------------------ | :----------------------------------------------- |
-| `pnpm install`             | Installs dependencies                            |
-| `pnpm dev`             | Starts local dev server at `localhost:4321`      |
-| `pnpm build`           | Build your production site to `./dist/`          |
-| `pnpm preview`         | Preview your build locally, before deploying     |
-| `pnpm astro ...`       | Run CLI commands like `astro add`, `astro check` |
-| `pnpm astro -- --help` | Get help using the Astro CLI                     |
+Email, Global Resource / SmartCompliance data, years, education, KYC stack,
+project links, and OG images (`/og/es.png`, `/og/en.png`). They are marked as
+`[PENDIENTE]` / `null` in `src/data/career.ts` and `src/content/projects.json`.
 
-## 👀 Want to learn more?
+## Technical note
 
-Feel free to check [our documentation](https://docs.astro.build) or jump into our [Discord server](https://astro.build/chat).
+`@emnapi/runtime` and `@emnapi/core` are declared as devDependencies on purpose: without them, `@astrojs/check` resolves a 2.0 beta of `@emnapi/runtime` that breaks `pnpm check`. `typescript` is pinned to v6 because `astro check` doesn't support TS 7 yet.

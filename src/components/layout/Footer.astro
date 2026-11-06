@@ -1,0 +1,18 @@
+---
+import { useTranslations, type Lang } from "@/i18n/utils";
+
+interface Props {
+  lang: Lang;
+}
+
+const t = useTranslations(Astro.props.lang);
+---
+
+<footer class="border-t-[1.5px] border-ink">
+  <div class="container-site flex flex-wrap items-center justify-between gap-4 py-8 font-mono text-[13px] text-muted">
+    <p>© 2026 Pedro Acosta · {t.footer.copy}</p>
+    <a href="#top" class="inline-flex min-h-11 items-center hover:text-cobalt">
+      ↑ {t.footer.top}
+    </a>
+  </div>
+</footer>

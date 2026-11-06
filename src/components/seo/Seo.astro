@@ -1,0 +1,59 @@
+---
+import { languages, translatePath, useTranslations, type Lang } from "@/i18n/utils";
+
+export interface SeoProps {
+  title: string;
+  description: string;
+  lang: Lang;
+  /** 404: noindex, without canonical or hreflang (design doc §5b). */
+  noindex?: boolean;
+  ogType?: "website" | "profile" | "article";
+  jsonLd?: Record<string, unknown>;
+}
+
+type Props = SeoProps;
+
+const { title, description, lang, noindex = false, ogType = "website", jsonLd } = Astro.props;
+const t = useTranslations(lang);
+const site = Astro.site!;
+const path = Astro.url.pathname;
+const canonical = new URL(path, site).href;
+const alternates = languages.map((l) => ({
+  lang: l,
+  href: new URL(translatePath(path, l), site).href,
+}));
+const ogImage = new URL(`/og/${lang}.png`, site).href; // PENDING: generate per page (Satori)
+const otherLocale = useTranslations(lang === "es" ? "en" : "es").meta.locale;
+---
+
+<title>{title}</title>
+<meta name="description" content={description} />
+{noindex ? (
+  <meta name="robots" content="noindex" />
+) : (
+  <>
+    <meta name="robots" content="index, follow" />
+    <link rel="canonical" href={canonical} />
+    {alternates.map((a) => (
+      <link rel="alternate" hreflang={a.lang} href={a.href} />
+    ))}
+    <link
+      rel="alternate"
+      hreflang="x-default"
+      href={alternates.find((a) => a.lang === "en")!.href}
+    />
+  </>
+)}
+
+<meta property="og:type" content={ogType} />
+<meta property="og:title" content={title} />
+<meta property="og:description" content={description} />
+<meta property="og:url" content={canonical} />
+<meta property="og:image" content={ogImage} />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta property="og:locale" content={t.meta.locale} />
+<meta property="og:locale:alternate" content={otherLocale} />
+<meta name="twitter:card" content="summary_large_image" />
+
+{jsonLd && <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />}

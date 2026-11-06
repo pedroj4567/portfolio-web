@@ -1,0 +1,98 @@
+[
+  {
+    "id": "disart-energy",
+    "order": 1,
+    "featured": true,
+    "cover": "disart",
+    "categories": ["backend", "web"],
+    "stack": ["NestJS", "MongoDB", "Redis", "AWS", "OCPP"],
+    "title": { "es": "Disart Energy", "en": "Disart Energy" },
+    "summary": {
+      "es": "Backend para gestionar estaciones de carga de vehículos eléctricos con el protocolo OCPP: estado en tiempo real, sesiones de carga y fallas.",
+      "en": "Backend to manage electric vehicle charging stations over OCPP: real-time status, charging sessions and faults."
+    },
+    "links": { "code": null, "demo": null },
+    "caseStudy": {
+      "es": {
+        "problem": "Las estaciones de carga reportan su estado por OCPP y el negocio necesitaba verlas y operarlas en tiempo real.",
+        "solution": "Servicio en NestJS que mantiene la conexión OCPP con cada estación, guarda el estado en MongoDB y usa Redis para el estado caliente. Desplegado en AWS.",
+        "decisions": [
+          "Redis para el estado en vivo de cada estación",
+          "MongoDB para el historial de sesiones"
+        ],
+        "results": ["[PENDIENTE]"]
+      },
+      "en": {
+        "problem": "Charging stations report their status over OCPP and the business needed to see and operate them in real time.",
+        "solution": "NestJS service that keeps the OCPP connection with each station, stores state in MongoDB and uses Redis for hot state. Deployed on AWS.",
+        "decisions": ["Redis for each station's live state", "MongoDB for session history"],
+        "results": ["[PENDING]"]
+      }
+    }
+  },
+  {
+    "id": "antorcha",
+    "order": 2,
+    "cover": "antorcha",
+    "categories": ["mobile", "backend"],
+    "stack": ["Go", "Fiber", "MongoDB"],
+    "title": { "es": "Antorcha", "en": "Antorcha" },
+    "summary": {
+      "es": "App móvil con API en Go (Fiber) y MongoDB.",
+      "en": "Mobile app backed by a Go (Fiber) API and MongoDB."
+    },
+    "links": { "code": null, "demo": null }
+  },
+  {
+    "id": "kyc-cedulas-venezolanas",
+    "order": 3,
+    "cover": "kyc",
+    "categories": ["backend", "algorithms"],
+    "stack": ["KYC", "Extracción de datos"],
+    "title": { "es": "KYC de cédulas venezolanas", "en": "Venezuelan ID KYC" },
+    "summary": {
+      "es": "Verificación de identidad y extracción de datos de cédulas venezolanas.",
+      "en": "Identity verification and data extraction from Venezuelan ID cards."
+    },
+    "links": { "code": null, "demo": null }
+  },
+  {
+    "id": "backoffice-monorepo",
+    "order": 4,
+    "cover": "backoffice",
+    "categories": ["cloud", "backend", "web"],
+    "stack": ["Nx", "Lambda", "DynamoDB", "CQRS"],
+    "title": { "es": "Backoffice monorepo", "en": "Backoffice monorepo" },
+    "summary": {
+      "es": "Backoffice serverless en un monorepo Nx: Lambdas, DynamoDB y CQRS.",
+      "en": "Serverless backoffice in an Nx monorepo: Lambdas, DynamoDB and CQRS."
+    },
+    "links": { "code": null, "demo": null }
+  },
+  {
+    "id": "go-task-manager",
+    "order": 5,
+    "cover": "tasks",
+    "categories": ["backend"],
+    "stack": ["Go", "Gin", "GORM", "PostgreSQL"],
+    "title": { "es": "Go Task Manager", "en": "Go Task Manager" },
+    "summary": {
+      "es": "API REST de gestión de tareas en Go con Gin, GORM y PostgreSQL.",
+      "en": "Task management REST API in Go with Gin, GORM and PostgreSQL."
+    },
+    "links": { "code": null, "demo": null }
+  },
+  {
+    "id": "analitica-financiera",
+    "order": 6,
+    "cover": "analytics",
+    "categories": ["algorithms", "web"],
+    "stack": ["JavaScript"],
+    "title": { "es": "Analítica financiera", "en": "Financial analytics" },
+    "summary": {
+      "es": "Análisis de series financieras con algoritmos de ventana deslizante.",
+      "en": "Financial time-series analysis with sliding window algorithms."
+    },
+    "links": { "code": null, "demo": null }
+  }
+]

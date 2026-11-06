@@ -1,0 +1,90 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import InfraIcon from "@/components/hero/InfraIcon.astro";
+import Win from "@/components/ui/Win.astro";
+import { otherLang, routes, useTranslations, type Lang } from "@/i18n/utils";
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+const r = routes(lang);
+const [before, accent, after] = t.notFound.body;
+---
+
+<!-- noindex, without canonical or hreflang, excluded from the sitemap (§5b) -->
+<BaseLayout lang={lang} title={`404 · ${t.notFound.title}`} description={t.notFound.title} noindex>
+  <section class="nf relative isolate overflow-hidden">
+    <div class="container-site flex min-h-[calc(100svh-68px)] flex-wrap items-center gap-x-12 gap-y-14 py-16">
+      <div class="min-w-0 flex-[1_1_420px]">
+        <p class="chip rv">&gt;_ {t.notFound.pill}</p>
+        <h1 class="h-display wipe mt-6 text-[clamp(120px,22vw,300px)] text-ink">
+          404<span class="dot">.</span>
+        </h1>
+        <p class="rv d1 mt-4 max-w-[40ch] text-[clamp(18px,2vw,24px)] leading-snug text-ink">
+          {before} <em class="accent">{accent}</em>
+          {after}
+        </p>
+        <div class="rv d2 mt-8 flex flex-wrap gap-3">
+          <a href={r.home} class="btn btn-k">
+            {t.notFound.home} →
+          </a>
+          <a href={r.projects} class="btn btn-o">
+            {t.notFound.projects}
+          </a>
+        </div>
+        <a
+          href={routes(otherLang(lang)).home}
+          hreflang={otherLang(lang)}
+          class="rv d3 mono-meta mt-6 inline-flex min-h-11 items-center hover:text-cobalt"
+        >
+          {t.notFound.other} ↗
+        </a>
+      </div>
+
+      <div class="relative flex-[1_1_380px]">
+        <Win title="router · log" class="pop" bodyClass="p-5 font-mono text-[13px] leading-[1.9]">
+          <p class="break-all text-muted">
+            $ curl -I pedro.dev<span data-route>/…</span>
+          </p>
+          <p>
+            <span class="ok">●</span> api ok · <span class="ok">●</span> db ok ·{" "}
+            <span class="ko">●</span> {t.notFound.routeMissing}
+          </p>
+          <p class="mt-2 border-t-[1.5px] border-dashed border-ink/25 pt-2">
+            {t.notFound.allGood}
+            <span class="pulse ml-1 inline-block h-[1em] w-[7px] translate-y-[2px] bg-ink"></span>
+          </p>
+        </Win>
+        <div class="mt-10 flex items-end justify-around" aria-hidden="true">
+          <InfraIcon name="cloud" broken class="fa h-auto w-[clamp(96px,12vw,140px)]" />
+          <InfraIcon name="queue" broken class="fb h-auto w-[clamp(110px,13vw,150px)]" />
+        </div>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<script is:inline>
+  // Shows the route that was actually requested.
+  document.querySelectorAll("[data-route]").forEach(function (el) {
+    el.textContent = location.pathname;
+  });
+</script>
+
+<style>
+  .nf {
+    background:
+      radial-gradient(ellipse 45% 55% at 80% 30%, rgb(43 89 255 / 0.16), transparent 70%),
+      radial-gradient(ellipse 40% 50% at 12% 85%, rgb(217 196 163 / 0.45), transparent 70%);
+  }
+  .ok {
+    color: var(--color-cobalt);
+  }
+  .ko {
+    color: var(--color-ink);
+    opacity: 0.35;
+  }
+</style>

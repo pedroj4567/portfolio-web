@@ -1,0 +1,110 @@
+---
+// Fonts self-hosted with Fontsource. Each file declares unicode-range:
+// the browser only downloads the Latin subset (latin-ext only if needed).
+import "@fontsource-variable/bricolage-grotesque/opsz.css";
+import "@fontsource-variable/dm-sans/opsz.css";
+import "@fontsource/dm-mono/latin-400.css";
+import "@fontsource/dm-mono/latin-500.css";
+import "@fontsource/instrument-serif/latin-400.css";
+import "@fontsource/instrument-serif/latin-400-italic.css";
+import h1Font from "@fontsource-variable/bricolage-grotesque/files/bricolage-grotesque-latin-opsz-normal.woff2?url";
+import "@/styles/global.css";
+
+import Seo, { type SeoProps } from "@/components/seo/Seo.astro";
+import Navbar from "@/components/layout/Navbar.astro";
+import MobileMenu from "@/components/layout/MobileMenu.astro";
+import Footer from "@/components/layout/Footer.astro";
+import { useTranslations } from "@/i18n/utils";
+
+type Props = SeoProps;
+
+const props = Astro.props;
+const t = useTranslations(props.lang);
+---
+
+<!doctype html>
+<html lang={props.lang}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#F3EFE8" />
+    <meta name="generator" content={Astro.generator} />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" href="/favicon.ico" />
+    <!-- Preload of the H1 font (LCP) -->
+    <link rel="preload" href={h1Font} as="font" type="font/woff2" crossorigin />
+    <!-- The first frame waits for the whole page, so the scroll restore below runs before it. -->
+    <link rel="expect" href="#pa-content-end" blocking="render" />
+    <Seo {...props} />
+  </head>
+  <body id="top" class="text-body">
+    <a
+      href="#main"
+      class="sr-only z-[60] rounded-full bg-ink px-4 py-2 text-paper focus:not-sr-only focus:fixed focus:top-3 focus:left-3"
+    >
+      {t.skip}
+    </a>
+    <Navbar lang={props.lang} />
+    <MobileMenu lang={props.lang} />
+
+    <main id="main" class="pt-[68px]">
+      <slot />
+    </main>
+
+    <Footer lang={props.lang} />
+    <div id="pa-content-end" hidden></div>
+    <script is:inline>
+      // Language change: land on the same section, at the same point, before the first paint
+      // (the cross-fade itself is the native view transition in global.css).
+      // Inside a function: a global `var top` would hit the read-only `window.top`.
+      (function () {
+        try {
+          var raw = sessionStorage.getItem("pa-pos");
+          if (!raw) return;
+          sessionStorage.removeItem("pa-pos");
+          var pos = JSON.parse(raw);
+          var section = document.querySelectorAll("main > section")[pos.i];
+          var max = document.documentElement.scrollHeight - innerHeight;
+          var target = section
+            ? section.getBoundingClientRect().top + scrollY + pos.off
+            : pos.ratio * max;
+          scrollTo({ top: Math.max(0, Math.min(max, target)), behavior: "instant" });
+        } catch (e) {}
+      })();
+    </script>
+
+    <script>
+      import { LANG_STORAGE_KEY } from "@/i18n/utils";
+
+      // Remember the language chosen in the ES | EN selector, and where the reader was:
+      // the section on screen (by position, ids differ per language) and the offset inside it.
+      const NAV_HEIGHT = 72;
+      document.addEventListener("click", (e) => {
+        const link = (e.target as Element).closest<HTMLAnchorElement>("[data-lang-link]");
+        if (!link || link.getAttribute("aria-current") === "true") return;
+        const sections = [...document.querySelectorAll<HTMLElement>("main > section")];
+        let i = -1;
+        sections.forEach((s, k) => {
+          if (s.getBoundingClientRect().top <= NAV_HEIGHT + 2) i = k;
+        });
+        const off = i >= 0 ? -sections[i].getBoundingClientRect().top : 0;
+        const max = document.documentElement.scrollHeight - innerHeight;
+        try {
+          localStorage.setItem(LANG_STORAGE_KEY, link.dataset.langLink!);
+          sessionStorage.setItem(
+            "pa-pos",
+            JSON.stringify({ i: Math.max(0, i), off, ratio: max > 0 ? scrollY / max : 0 }),
+          );
+        } catch {}
+      });
+
+      // Lazy loading: Motion is only downloaded in browsers without animation-timeline.
+      const needsFallback =
+        !CSS.supports("animation-timeline: view()") &&
+        !matchMedia("(prefers-reduced-motion: reduce)").matches;
+      if (needsFallback) {
+        import("@/lib/scroll-fallback").then((m) => m.initScrollFallback());
+      }
+    </script>
+  </body>
+</html>

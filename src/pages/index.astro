@@ -1,16 +1,37 @@
 ---
+/*
+ * `/` → /es/ or /en/ (§5b): first the saved language (pa-lang), then the
+ * browser's. Without JS, meta refresh goes to /es/. Not indexed.
+ */
 ---
 
-<html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<link rel="icon" href="/favicon.ico" />
-		<meta name="viewport" content="width=device-width" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Astro</title>
-	</head>
-	<body>
-		<h1>Astro</h1>
-	</body>
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex" />
+    <title>Pedro Acosta</title>
+    <script is:inline>
+      (function () {
+        var saved = null;
+        try {
+          saved = localStorage.getItem("pa-lang");
+        } catch (e) {}
+        var browser = (navigator.language || "es").slice(0, 2).toLowerCase();
+        var lang = saved === "es" || saved === "en" ? saved : browser === "en" ? "en" : "es";
+        location.replace("/" + lang + "/" + location.hash);
+      })();
+    </script>
+    <noscript>
+      <meta http-equiv="refresh" content="0; url=/es/" />
+    </noscript>
+    <link rel="alternate" hreflang="es" href="/es/" />
+    <link rel="alternate" hreflang="en" href="/en/" />
+  </head>
+  <body style="background:#F3EFE8">
+    <p>
+      <a href="/es/">Español</a> · <a href="/en/">English</a>
+    </p>
+  </body>
 </html>

@@ -1,0 +1,31 @@
+---
+import ProjectsExplorer from "@/components/projects/ProjectsExplorer.astro";
+import SectionHeader from "@/components/ui/SectionHeader.astro";
+import { routes, useTranslations, type Lang } from "@/i18n/utils";
+import { getProjects } from "@/lib/projects";
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+const projects = await getProjects(lang);
+---
+
+<section id={t.ids.projects} class="section" aria-labelledby="projects-title">
+  <div class="container-site">
+    <SectionHeader
+      id="projects-title"
+      eyebrow={t.projects.eyebrow}
+      title={t.projects.title}
+      class="mb-10"
+    />
+    <ProjectsExplorer lang={lang} projects={projects} />
+    <p class="rv mt-12 text-center">
+      <a href={routes(lang).projects} class="btn btn-o">
+        {t.projects.seeAll} →
+      </a>
+    </p>
+  </div>
+</section>

@@ -1,0 +1,135 @@
+---
+import { contact } from "@/data/career";
+import { useTranslations, type Lang } from "@/i18n/utils";
+
+interface Props {
+  lang: Lang;
+}
+
+const t = useTranslations(Astro.props.lang);
+
+const channels = [
+  {
+    name: "Email",
+    value: contact.email ?? t.pending.email,
+    href: contact.email ? `mailto:${contact.email}` : null,
+  },
+  { name: "GitHub", value: contact.github.label, href: contact.github.href },
+  { name: "LinkedIn", value: contact.linkedin.label, href: contact.linkedin.href },
+];
+---
+
+<section id={t.ids.contact} class="contact section" aria-labelledby="contact-title">
+  <div class="container-site">
+    <p class="eyebrow rv">{t.contact.eyebrow}</p>
+    <h2 id="contact-title" class="h-display h-talk wipe mt-3 text-ink">
+      {t.contact.title}
+      <span class="dot">.</span>
+    </h2>
+    <p class="rv d1 mt-6 text-[clamp(18px,2vw,24px)] text-muted">{t.contact.lead}</p>
+
+    <div class="win sh pop mt-14 max-w-[880px] overflow-hidden">
+      <div class="wbar" aria-hidden="true">
+        <span>— ×</span>
+        <span>contacto.links</span>
+        <span>•••</span>
+      </div>
+      <ul>
+        {channels.map((c) => (
+          <li>
+            {c.href ? (
+              <a
+                class="clink"
+                href={c.href}
+                target={c.href.startsWith("http") ? "_blank" : undefined}
+                rel="me noopener"
+              >
+                <span class="cname">{c.name}</span>
+                <span class="cval">{c.value}</span>
+                <span class="carrow" aria-hidden="true">
+                  ↗
+                </span>
+              </a>
+            ) : (
+              <div class="clink is-pending">
+                <span class="cname">{c.name}</span>
+                <span class="cval">{c.value}</span>
+              </div>
+            )}
+          </li>
+        ))}
+      </ul>
+    </div>
+  </div>
+</section>
+
+<style>
+  .contact {
+    background: radial-gradient(ellipse 50% 60% at 85% 70%, rgb(43 89 255 / 0.1), transparent 70%);
+  }
+
+  li + li .clink {
+    border-top: 1.5px solid var(--color-ink);
+  }
+
+  .clink {
+    position: relative;
+    isolation: isolate;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 4px 20px;
+    min-height: 96px;
+    padding: 20px clamp(20px, 3vw, 32px);
+    color: var(--color-ink);
+    transition: color 0.45s var(--ease-out-soft);
+  }
+  .clink::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background: linear-gradient(120deg, #2b59ff 0%, #1f45e0 100%);
+    opacity: 0;
+    transition: opacity 0.45s var(--ease-out-soft);
+  }
+  .cname {
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: clamp(32px, 4.4vw, 56px);
+    letter-spacing: -0.04em;
+    line-height: 1;
+  }
+  .cval {
+    flex: 1;
+    font-family: var(--font-mono);
+    font-size: 14px;
+    color: var(--color-muted);
+    transition: color 0.45s var(--ease-out-soft);
+  }
+  .carrow {
+    font-size: 32px;
+    transition: translate 0.5s var(--ease-out-soft);
+  }
+  .is-pending .cval {
+    color: var(--color-muted);
+  }
+
+  @media (hover: hover) {
+    a.clink:hover {
+      color: var(--color-surface);
+    }
+    a.clink:hover::before {
+      opacity: 1;
+    }
+    a.clink:hover .cval {
+      color: rgb(255 255 255 / 0.85);
+    }
+    a.clink:hover .carrow {
+      translate: 4px -4px;
+    }
+  }
+  a.clink:focus-visible {
+    outline-offset: -4px;
+  }
+</style>

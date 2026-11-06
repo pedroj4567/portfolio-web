@@ -1,0 +1,66 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import Hero from "@/components/sections/Hero.astro";
+import About from "@/components/sections/About.astro";
+import Stack from "@/components/sections/Stack.astro";
+import Career from "@/components/sections/Career.astro";
+import Projects from "@/components/sections/Projects.astro";
+import Contact from "@/components/sections/Contact.astro";
+import FlightPath from "@/components/layout/FlightPath.astro";
+import { contact } from "@/data/career";
+import { useTranslations, type Lang } from "@/i18n/utils";
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+const site = Astro.site!.href.replace(/\/$/, "");
+
+// JSON-LD ProfilePage + Person (§10b)
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "ProfilePage",
+  inLanguage: lang,
+  mainEntity: {
+    "@type": "Person",
+    name: "Pedro Acosta",
+    jobTitle: "Senior Software Engineer · Backend",
+    url: site,
+    image: `${site}/og/avatar.png`,
+    address: { "@type": "PostalAddress", addressLocality: "Caracas", addressCountry: "VE" },
+    knowsAbout: [
+      "Backend",
+      "Node.js",
+      "NestJS",
+      "Go",
+      "gRPC",
+      "AWS",
+      lang === "es" ? "Microservicios" : "Microservices",
+      lang === "es" ? "Arquitecturas orientadas a eventos" : "Event-driven architecture",
+      "PostgreSQL",
+      "MongoDB",
+      "Redis",
+      "BullMQ",
+    ],
+    sameAs: [contact.github.href, contact.linkedin.href],
+  },
+};
+---
+
+<BaseLayout
+  lang={lang}
+  title={t.meta.title}
+  description={t.meta.description}
+  ogType="profile"
+  jsonLd={jsonLd}
+>
+  <Hero lang={lang} />
+  <About lang={lang} />
+  <Stack lang={lang} />
+  <Career lang={lang} />
+  <Projects lang={lang} />
+  <Contact lang={lang} />
+  <FlightPath lang={lang} />
+</BaseLayout>

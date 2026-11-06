@@ -1,0 +1,72 @@
+---
+import ProjectCover from "./ProjectCover.astro";
+import ProjectLinks from "./ProjectLinks.astro";
+import { routes, useTranslations, type Lang } from "@/i18n/utils";
+import type { Project } from "@/lib/projects";
+
+interface Props {
+  project: Project;
+  lang: Lang;
+  index: number;
+}
+
+const { project: p, lang, index } = Astro.props;
+const t = useTranslations(lang);
+const href = routes(lang).project(p.slug);
+---
+
+<li class="card-slot pop" data-project data-categories={p.categories.join(" ")}>
+  <article class="win sh flex h-full flex-col overflow-hidden" aria-labelledby={`p-${p.slug}`}>
+    <div class="wbar" aria-hidden="true">
+      <span>— ×</span>
+      <span>{p.slug}</span>
+      <span>•••</span>
+    </div>
+    <ProjectCover cover={p.cover} class="border-b-[1.5px] border-ink" />
+    <div class="flex flex-1 flex-col p-6">
+      <p class="mono-meta">
+        {String(index + 1).padStart(2, "0")} ·{" "}
+        {p.categories.map((c) => t.categories[c]).join(" / ")}
+      </p>
+      <h3 id={`p-${p.slug}`} class="h-card mt-2 text-[28px] text-ink">
+        <a href={href} class="hover:text-cobalt">
+          {p.title}
+          <span class="sr-only">
+            {" "}
+            — {t.projects.caseStudy} {p.title}
+          </span>
+        </a>
+      </h3>
+      <p class="mt-2 leading-relaxed">{p.summary}</p>
+      <ul class="mt-4 flex flex-wrap gap-1.5" aria-label={t.projects.stackLabel}>
+        {p.stack.map((s) => (
+          <li class="chip">{s}</li>
+        ))}
+      </ul>
+      <div class="mt-auto pt-6">
+        <ProjectLinks lang={lang} links={p.links} title={p.title} />
+      </div>
+    </div>
+  </article>
+</li>
+
+<style>
+  /*
+   * Lazy rendering: the browser doesn't lay out or paint cards outside the
+   * viewport until they get close (content-visibility). The reserved size avoids CLS.
+   */
+  .card-slot {
+    content-visibility: auto;
+    contain-intrinsic-size: auto 560px;
+    /*
+     * content-visibility implies `contain: paint`: it clips everything outside the
+     * <li>. This padding reserves room for the hover (translate -2px and shadow
+     * 8 → 11px) so the border and shadow aren't cut off.
+     */
+    padding: 4px 12px 12px 4px;
+    margin: -4px -12px -12px -4px;
+  }
+  .card-slot[hidden] {
+    display: none;
+  }
+</style>

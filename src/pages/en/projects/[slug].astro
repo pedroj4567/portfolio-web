@@ -1,0 +1,13 @@
+---
+import type { GetStaticPaths } from "astro";
+import ProjectDetailView from "@/views/ProjectDetailView.astro";
+import { getProject, getProjectSlugs } from "@/lib/projects";
+
+// One case study per project, generated at build time from projects.json.
+export const getStaticPaths = (async () =>
+  (await getProjectSlugs()).map((slug) => ({ params: { slug } }))) satisfies GetStaticPaths;
+
+const project = (await getProject("en", Astro.params.slug!))!;
+---
+
+<ProjectDetailView lang="en" project={project} />
